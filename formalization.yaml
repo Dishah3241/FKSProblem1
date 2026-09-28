@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/v0.4.schema.json
+# formalization.yaml v0.4, written to Palomar's stricter rules. Before submitting:
+# - replace every {{…}};
+# - validate against the v0.4 schema and Palomar's own loader;
+# - take every model name from a run log, never from memory.
+# Worked example: projects/Erdos1007/formalization.yaml.
+# Rules and commands: the Math workspace's docs/research/2026-09-22-palomar-submission-path.md.
+version: "v0.4"
+
+project:
+  name: "FKS Problem 1: graphs of maximum degree d embed on a sphere in R^d"
+  # The registry abstract, at most 10,000 characters: the mathematical content and the principal
+  # results, readable without the repository.
+  description: >-
+    Any two distinct elements of `{2, 3, 5}` are coprime.
+  authors:                 # humans only; credit models under `automation`
+    - "Dishant Shah"
+  responsible_maintainers:
+    - "Dishant Shah"
+  license: "Apache-2.0"    # must match the root LICENSE exactly
+
+classification:            # one to eight codes from Palomar's taxonomy snapshots
+  arxiv: ["{{ARXIV_CATEGORY}}"]     # e.g. "math.CO"
+  msc2020: ["{{MSC2020_CODE}}"]     # e.g. "05C35"; may be empty
+
+# `type` is one of paper, book, web discussion, folklore, original-proof or other. At least one
+# source must formalize, adapt or independently prove the result, which makes it source-based.
+sources:
+  - title: "{{SOURCE_TITLE}}"
+    authors:
+      - "{{SOURCE_AUTHORS}}"
+    id: "{{SOURCE_DOI_OR_URL}}"
+    type: "paper"
+    location: "{{SOURCE_PINPOINT}}"
+    relationship: "formalizes"
+    author_endorsement: "not-contacted"
+    note: >-
+      The proof of record, cited at its exact pinpoint.
+
+# Prior or parallel formalizations. When the statement came from formal-conjectures, that
+# repository belongs here, pinned to a commit.
+related_formalizations:
+  - id: "https://github.com/google-deepmind/formal-conjectures/blob/{{FC_COMMIT}}/{{FC_PATH}}"
+    relationship: "builds-on"
+    note: >-
+      The formal statement is this file's {{FC_DECLARATION}}, reproduced with its supporting
+      definitions inlined so that it depends on Mathlib alone.
+
+status:
+  scope: >-
+    {{SCOPE}}
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "FKSProblem1.Palomar.target"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+
+fidelity:
+  divergences: >-
+    {{DIVERGENCES}}
+
+automation:
+  # One entry per phase. `method` is manual, copilot, agent, autonomous or other. Only 3 of
+  # Palomar's first 36 entries disclosed AI assistance; this workspace discloses it every time.
+  methods:
+    - method: "agent"
+      models: ["{{MODEL_FROM_RUN_LOG}}"]
+      framework: "{{HARNESS_AND_VERSION}}"
+      tool_setup: >-
+        {{PHASE}}: what this phase produced, and its run ids.
+  spend_usd: "subscription-based usage"
+  notes: >-
+    {{PROCESS}}: who chose the target, who signed off the statement's meaning, and what a human
+    actually read.
+
+limitations: >-
+  {{LIMITATIONS}}
+
+review:
+  status: "{{REVIEW_STATUS}}"    # unchecked, agent-reviewed, self-assessed, peer-reviewed or author-verified
+  reviewers: []
+  notes: >-
+    {{REVIEW_NOTES}}

@@ -1,0 +1,10 @@
+
+namespace FKSProblem1.Palomar
+
+set_option warningAsError false in
+/-- Any two distinct elements of `{2, 3, 5}` are coprime. -/
+theorem target :
+    FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.SmallPrimesCoprime := by
+  sorry
+
+end FKSProblem1.Palomar
