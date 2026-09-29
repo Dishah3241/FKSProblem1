@@ -27,11 +27,11 @@ jobs:
 
   preflight:
     needs: request-id
-    uses: PalomarRegistry/PalomarSubmission/.github/workflows/submission.yml@1703d7babd984ccc3831cdf89c28221abe34808f
+    uses: PalomarRegistry/PalomarSubmission/.github/workflows/submission.yml@65f0154ed776cd26c224254aa57b379137f28b0d
     with:
       repository: ${{ github.repository }}
       commit: ${{ inputs.commit }}
-      pipeline_commit: 1703d7babd984ccc3831cdf89c28221abe34808f
+      pipeline_commit: 65f0154ed776cd26c224254aa57b379137f28b0d
       request_id: ${{ needs.request-id.outputs.id }}
       mode: full
       execution_profile: palomar-standard-v1
