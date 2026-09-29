@@ -1,54 +1,62 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/v0.4.schema.json
-# formalization.yaml v0.4, written to Palomar's stricter rules. Before submitting:
-# - replace every {{…}};
-# - validate against the v0.4 schema and Palomar's own loader;
-# - take every model name from a run log, never from memory.
-# Worked example: projects/Erdos1007/formalization.yaml.
-# Rules and commands: the Math workspace's docs/research/2026-09-22-palomar-submission-path.md.
 version: "v0.4"
 
 project:
-  name: "FKS Problem 1: graphs of maximum degree d embed on a sphere in R^d"
-  # The registry abstract, at most 10,000 characters: the mathematical content and the principal
-  # results, readable without the repository.
+  name: "FKS Problem 1 on at most twice the dimension vertices"
   description: >-
-    Any two distinct elements of `{2, 3, 5}` are coprime.
-  authors:                 # humans only; credit models under `automation`
-    - "Dishant Shah"
-  responsible_maintainers:
-    - "Dishant Shah"
-  license: "Apache-2.0"    # must match the root LICENSE exactly
+    A Lean-checked proof of FKS Problem 1 for graphs on at most 2d vertices, for every
+    d ≥ 4: every finite simple graph of maximum degree at most d with no connected
+    component isomorphic to K_{d+1} has an injective placement in Euclidean d-space,
+    with every vertex of norm 1/√2 and every edge at distance exactly 1. Non-edges
+    are unconstrained and may also have length 1. The unrestricted question, including
+    its d = 4 instance, is stated and marked open. The exception is interpreted
+    componentwise: a K_{d+1} component already precludes such a placement even when
+    other components are present. The research audience is discrete geometers and
+    extremal graph theorists studying spherical unit-distance representations,
+    graph dimension and bounded-degree embedding problems.
+  authors: ["Dishant Shah"]
+  responsible_maintainers: ["Dishant Shah"]
+  license: "Apache-2.0"
 
-classification:            # one to eight codes from Palomar's taxonomy snapshots
-  arxiv: ["{{ARXIV_CATEGORY}}"]     # e.g. "math.CO"
-  msc2020: ["{{MSC2020_CODE}}"]     # e.g. "05C35"; may be empty
+classification:
+  arxiv: ["math.CO", "math.MG"]
+  msc2020: ["05C62", "52C10"]
 
-# `type` is one of paper, book, web discussion, folklore, original-proof or other. At least one
-# source must formalize, adapt or independently prove the result, which makes it source-based.
 sources:
-  - title: "{{SOURCE_TITLE}}"
-    authors:
-      - "{{SOURCE_AUTHORS}}"
-    id: "{{SOURCE_DOI_OR_URL}}"
+  - title: "Embedding graphs in Euclidean space"
+    authors: ["Nóra Frankl", "Andrey Kupavskii", "Konrad J. Swanepoel"]
+    id: "https://arxiv.org/abs/1802.03092"
     type: "paper"
-    location: "{{SOURCE_PINPOINT}}"
+    location: "J. Combin. Theory Ser. A 171 (2020), 105146; §5, Problem 1"
     relationship: "formalizes"
     author_endorsement: "not-contacted"
     note: >-
-      The proof of record, cited at its exact pinpoint.
+      Source of the open question, not a published proof of the bounded claim.
+      The submission proves the restriction to at most 2d vertices using GraphDimension.
+      The exception is read componentwise (A40), following the componentwise wording
+      immediately before Problem 1. A literal exclusion of only the graph K_{d+1}
+      is false for K_{d+1} together with an isolated vertex. The at-most-2d case follows
+      from published results (FKS Lemma 13 with Tutte's theorem; or equitable colouring)
+      and was found stated nowhere; it is not claimed as new.
 
-# Prior or parallel formalizations. When the statement came from formal-conjectures, that
-# repository belongs here, pinned to a commit.
 related_formalizations:
-  - id: "https://github.com/google-deepmind/formal-conjectures/blob/{{FC_COMMIT}}/{{FC_PATH}}"
+  - id: "https://github.com/Dishah3241/GraphDimension/tree/db8062bb838b4ac31ea4d5648ea2a8b51685cfa0"
     relationship: "builds-on"
     note: >-
-      The formal statement is this file's {{FC_DECLARATION}}, reproduced with its supporting
-      definitions inlined so that it depends on Mathlib alone.
+      The proof lives in GraphDimension.Sphere.HalfOrder, declaration
+      SimpleGraph.SphereEmbeddable.of_card_le_two_mul. This repository supplies the
+      frozen statements, their equivalence, predicate bridges, fidelity companions
+      and Palomar entry point. The statement was authored here, not inherited from
+      formal-conjectures; the parallel open-statement submission is separate.
 
 status:
   scope: >-
-    {{SCOPE}}
+    Problem1Bounded: for every natural d > 3, every graph G on Fin n with n ≤ 2d,
+    G.maxDegree ≤ d and no complete component of order d + 1 has an injective spherical
+    placement in EuclideanSpace R (Fin d), of radius 1/√2, with every edge at distance 1.
+    The unrestricted Problem1 and Problem1At4 remain open Prop definitions, not
+    admitted theorems. All fidelity companions are proved. The sole deliberate sorry
+    is the advertised hole in Challenge.lean, excluded from the counts below.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -61,27 +69,115 @@ status:
 
 fidelity:
   divergences: >-
-    {{DIVERGENCES}}
+    The submission adds the vertex bound n ≤ 2d to FKS Problem 1 and does not claim
+    the unrestricted question. The source's maximum degree d is read as at most d,
+    consistent with its bounded-degree proposition; its exception except K_{d+1}
+    is corrected to no K_{d+1} connected component (A40). K_{d+1} together with an
+    isolate refutes the literal whole-graph exception; proved separating companions
+    certify this distinction. Under the degree bound the component exception is
+    equivalent to forbidding a clique of order d + 1. Fin n covers every finite graph
+    up to relabelling, including the empty graph; distances and norms are Euclidean L2.
+    Statement A uses maximum degree, reachability classes and a norm equation; the
+    independently authored Statement B uses neighbor-set cardinalities, component
+    isomorphisms and distance from zero. Stage1.Equivalence proves five equivalences,
+    including problem1Bounded_iff. The inline Palomar claim agrees definitionally with A.
+    The two statement authors shared the brief's intended reading; equivalence checks
+    their encodings rather than independently validating that reading.
 
 automation:
-  # One entry per phase. `method` is manual, copilot, agent, autonomous or other. Only 3 of
-  # Palomar's first 36 entries disclosed AI assistance; this workspace discloses it every time.
+  # Worker model strings were read with harness/run-model from the run logs.
   methods:
     - method: "agent"
-      models: ["{{MODEL_FROM_RUN_LOG}}"]
-      framework: "{{HARNESS_AND_VERSION}}"
+      models: ["glm-5.3-flash"]
+      framework: "pi"
       tool_setup: >-
-        {{PHASE}}: what this phase produced, and its run ids.
+        Blind Statement A: P10-A, 20260928-160844-5facc645.
+        Spherical and degree bridges B1/B2: P10-B12, 20260928-210103-e4afd00c.
+        Complete-component bridge B3 and Problem1Bounded.proof: P10-B3F,
+        20260929-115126-419a9185. Integration of inline statements, proof siblings,
+        open-claim marks and the Palomar target: P10-int, 20260929-122816-9fbf9814.
+        Blueprint against the landed proof: P10-bp, 20260929-122817-7bcfe09d.
+    - method: "agent"
+      models: ["gpt-6-astra"]
+      framework: "Codex"
+      tool_setup: >-
+        Blind Statement B: P10-B, 20260928-160845-a4c81237. Five statement equivalences:
+        P10-eq, 20260928-191529-00988344. Blueprint and leaf-interface design: P10-D1,
+        20260928-201058-8c3b05ad; found the reversed exception in two separating
+        companions (A56), subsequently corrected before the freeze. Parallel draft
+        of the open formal-conjectures statement: P10-FC, 20260928-210441-7a7d2768.
+    - method: "agent"
+      models: ["gpt-6-astra"]
+      framework: "Codex"
+      tool_setup: >-
+        GraphDimension leaves: component counts Q1–Q4 and nonempty Tutte cases R1–R3,
+        P10-W1a, 20260928-205510-7940ab74; empty-barrier classification R0,
+        P10-W2, 20260928-215412-1be1b025.
+    - method: "agent"
+      models: ["grok-4.7-build"]
+      framework: "grok (xAI)"
+      tool_setup: >-
+        GraphDimension saturated-clique component lemma L1 and indexed perfect-matching
+        pairs M1: P10-W1b, 20260928-205511-f507538c. Fidelity companions in this
+        repository: P10-W2, 20260928-215413-3f6528a2. These are proof contributions.
+    - method: "agent"
+      models: ["glm-5.3-flash"]
+      framework: "pi"
+      tool_setup: >-
+        GraphDimension leaves: padding P, complement degree D and bipartite placement G,
+        P10-W1c, 20260928-205511-265a5498; perfect-matching placement M2,
+        P10-W2, 20260928-215413-2bbc3798; matching-or-bipartite dichotomy T and
+        exactly/at-most-2d assembly A1/A2, P10-W3, 20260929-001236-47528fe2.
+    - method: "agent"
+      models: ["gpt-6.1-sol"]
+      framework: "Codex"
+      tool_setup: >-
+        Release preparation P10-rel, 20260929-130556-008a0f06: README, metadata,
+        Comparator record and local verification; no publication or submission.
+    - method: "agent"
+      models: ["gpt-6-astra"]
+      framework: "Codex"
+      tool_setup: >-
+        Read-only novelty check P10-N, run 20260929-130557-e7ff8ebc, with a second
+        lineage (grok, run 20260929-130557-d4a737a1): no novelty claim; the Math
+        workspace's docs/research/2026-09-29-p10-novelty.md.
+    - method: "agent"
+      models: ["claude-opus-5-5"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Managing agent (Claude Opus 5.5): scaffold P10-0, worker briefs, Compass,
+        correction of A56's separating statements before freeze, verification and
+        integration of the library leaves and proof bridges. It placed the bridge in
+        Standalone/Mathlib/Support/GraphDimensionBridge.lean to respect layering,
+        ordered Stage1 as a later leaf, pinned GraphDimension, and coordinated
+        the blueprint, novelty checks, review and release. It is a contributor,
+        not an independent reviewer. Model evidence: first assistant event in the
+        managing session log 7f6ec652-fc39-48b8-93fc-972da4ed11b0.jsonl.
   spend_usd: "subscription-based usage"
   notes: >-
-    {{PROCESS}}: who chose the target, who signed off the statement's meaning, and what a human
-    actually read.
+    The human maintainer chose FKS Problem 1 and the at-most-2d first target and signed
+    Compass rows 1–15 on 2026-09-28 (docs/compass.md). Statement authors worked blind
+    from briefs fixing the intended reading. The manager contributed corrections
+    and integration as well as orchestration. The main proof is in GraphDimension at
+    db8062bb838b4ac31ea4d5648ea2a8b51685cfa0 and uses earlier spherical-placement
+    infrastructure credited in that library's history. Run IDs cover the P10 rows of
+    the workspace's open-question manager wave log. Framework versions are not
+    evidenced by model headers. The parallel read-only grok (xAI) release review is
+    pending; its model will be named only after its run log supplies evidence.
 
 limitations: >-
-  {{LIMITATIONS}}
+  Only the at-most-2d-vertex restriction is proved; the unrestricted problem and its
+  d = 4 instance remain open. The proved case is not claimed as new. Witnesses, separating examples and statement equivalence
+  reduce semantic risk but do not replace mathematical review. Local Comparator
+  on macOS uses no sandbox. Sandboxed Palomar preflight, the final committed-tree
+  verification and publication remain release steps for the manager.
 
 review:
-  status: "{{REVIEW_STATUS}}"    # unchecked, agent-reviewed, self-assessed, peer-reviewed or author-verified
+  status: "unchecked"
   reviewers: []
   notes: >-
-    {{REVIEW_NOTES}}
+    PENDING: a release review by opencode (muse-spark-1.3), a model family that wrote
+    none of this proof or its library leaves; filled in before submission. grok is not
+    independent here: it wrote GraphDimension's L1/M1 leaves and this repository's
+    fidelity companions. The managing agent also contributed fixes and integration.
+    The owner's statement sign-off is recorded in docs/compass.md.
