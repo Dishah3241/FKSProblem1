@@ -11,7 +11,7 @@ Everything else, including every later proof and the GraphDimension library, is 
 **The frozen text** is statement A: `FKSProblem1/Standalone/Mathlib/StatementA.lean`, namespace
 `FKSProblem1.StatementA`, at FKSProblem1 `6aaca0c`.
 
-**Owner sign-off:** not yet given.
+**Owner sign-off: confirmed on 2026-09-28 for rows 1–15.** In the open-question manager's session, the owner answered "Freeze" to the request to sign this list, as committed at `d84e9ec`. The sign-off freezes the statement: statement A at `6aaca0c`, blob `6310931b942b7a7e9fa28e68a9fe469dd869c1ca`. Any change to a row cancels it.
 
 ## How the statement was made
 
