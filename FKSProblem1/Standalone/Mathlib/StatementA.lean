@@ -150,7 +150,7 @@ exception holds (it is not `K_{d+1}`: it has `d + 2` vertices), and whose conclu
 distinguishes `Problem1At` from the question the literal reading would state. -/
 def Problem1At.separating : Prop :=
   ∀ d : ℕ, 1 ≤ d → ∃ (n : ℕ) (G : SimpleGraph (Fin n)), n = d + 2 ∧
-    G.maxDegree ≤ d ∧ ¬ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
+    G.maxDegree ≤ d ∧ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
     ¬ (n = d + 1 ∧ ∀ a b : Fin n, a ≠ b → G.Adj a b)
 
 /-- Open problem. FKS Problem 1, as a proposition: for every `d > 3`, every graph of maximum
@@ -212,7 +212,7 @@ component on `d + 1` vertices, and has no spherical placement in `ℝᵈ`. The c
 what excludes it from the bounded question as well. -/
 def Problem1BoundedAt.separating : Prop :=
   ∀ d : ℕ, 2 ≤ d → ∃ (n : ℕ) (G : SimpleGraph (Fin n)), n = d + 2 ∧ n ≤ 2 * d ∧
-    G.maxDegree ≤ d ∧ ¬ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
+    G.maxDegree ≤ d ∧ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
     ¬ (n = d + 1 ∧ ∀ a b : Fin n, a ≠ b → G.Adj a b)
 
 /-- Open problem. The restriction of FKS Problem 1 to graphs on at most `2 * d` vertices, for
