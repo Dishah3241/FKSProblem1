@@ -19,7 +19,9 @@ import FKSProblem1.Standalone.Mathlib.Support.GraphDimensionBridge
 import GraphDimension.Examples.Sphere
 import GraphDimension.Sphere.Basic
 import GraphDimension.Sphere.Cycles
+import GraphDimension.Sphere.HalfOrder
 
+import Mathlib.Combinatorics.SimpleGraph.Clique
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
@@ -729,6 +731,25 @@ theorem Problem1Bounded.dropHd3.proof : Problem1Bounded.dropHd3 := by
       ((FKSProblem1.maxDegree_le_iff_neighborSet_ncard_le _).mpr fun v => by
         rw [utility_ncard])
       utility_not_component
+
+/-! ### Statement A's bounded target -/
+
+/-- The first target: FKS Problem 1 for graphs on at most `2 * d` vertices, for every `d > 3`.
+The degree bound becomes the neighbor-set bound through the degree bridge, the component
+exception becomes the absence of a clique of order `d + 1` through the component bridge, the
+library places every such graph on the sphere in `ℝᵈ` for `4 ≤ d` and `Nat.card` at most
+`2 * d`, and the placement returns through the spherical bridge. -/
+theorem Problem1Bounded.proof : Problem1Bounded := by
+  intro d hd3 n G hn hdeg hcomp
+  have hd4 : 4 ≤ d := by omega
+  have hdeg' : ∀ v, (G.neighborSet v).ncard ≤ d :=
+    (FKSProblem1.maxDegree_le_iff_neighborSet_ncard_le G).mp hdeg
+  have hK : G.CliqueFree (d + 1) := fun t ht =>
+    hcomp ((FKSProblem1.hasCompleteComponent_iff_not_cliqueFree G hdeg').mpr
+      ht.not_cliqueFree)
+  have hcard : Nat.card (Fin n) ≤ 2 * d := by rwa [Nat.card_fin]
+  exact (FKSProblem1.hasSphericalDimAtMost_iff_sphereEmbeddable G).mpr
+    (SimpleGraph.SphereEmbeddable.of_card_le_two_mul hd4 hcard hdeg' hK)
 
 end
 

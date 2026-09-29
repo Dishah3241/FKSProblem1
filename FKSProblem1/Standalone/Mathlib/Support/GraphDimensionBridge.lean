@@ -10,9 +10,11 @@ public import FKSProblem1.Standalone.Mathlib.StatementA
 public import GraphDimension.Sphere.Basic
 
 public import Mathlib.Combinatorics.SimpleGraph.Basic
+public import Mathlib.Combinatorics.SimpleGraph.Clique
 public import Mathlib.Combinatorics.SimpleGraph.Finite
 public import Mathlib.Data.Set.Card
 
+import GraphDimension.Combinatorics.SimpleGraph.CompleteComponent
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.Order.GroupWithZero.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
@@ -34,6 +36,11 @@ the edge equations over unchanged.
 The degree bridge restates the hypothesis `G.maxDegree ≤ d` as the bound on every neighbor set's
 cardinality, the form the downstream degree and counting arguments consume. It degenerates
 correctly: for the empty graph `G.maxDegree` is `0` and the neighbor-set quantifier is vacuous.
+
+Under that same degree bound, the component bridge identifies Statement A's exception — no
+connected component isomorphic to `K_{d + 1}` — with the absence of a clique of order `d + 1`:
+a clique of order `d + 1` already exhausts the `d` neighbours of each of its vertices, so it is
+the support of a connected component, and conversely a complete component contains such a clique.
 -/
 
 public section
@@ -71,5 +78,47 @@ theorem maxDegree_le_iff_neighborSet_ncard_le
   simp_rw [hn]
   exact ⟨fun h v => (G.degree_le_maxDegree v).trans h,
     fun h => G.maxDegree_le_of_forall_degree_le d h⟩
+
+open Classical in
+/-- Under the degree bound, Statement A's exception `HasCompleteComponent d G` is exactly the
+presence of a clique of order `d + 1`. A complete component is one: its reachability class is a
+clique of order `d + 1`, and the component isomorphism counts its vertices. Conversely, a clique
+of order `d + 1` already exhausts the `d` neighbours of each of its vertices, so no edge leaves
+it and it is the support of a connected component. -/
+theorem hasCompleteComponent_iff_not_cliqueFree
+    {n d : ℕ} (G : SimpleGraph (Fin n))
+    (hdeg : ∀ v, (G.neighborSet v).ncard ≤ d) :
+    StatementA.HasCompleteComponent d G ↔ ¬ G.CliqueFree (d + 1) := by
+  constructor
+  · rintro ⟨v, ⟨e⟩, hcomp⟩
+    have hcard : Fintype.card {w // G.Reachable v w} = d + 1 := by
+      rw [Fintype.card_congr e, Fintype.card_fin]
+    refine fun h => h {w | G.Reachable v w}.toFinset ⟨?_, ?_⟩
+    · intro a ha b hb hab
+      simp only [Finset.mem_coe, Set.mem_toFinset] at ha hb
+      exact hcomp a b ha hb hab
+    · rw [← Set.ncard_eq_toFinset_card', ← Set.fintypeCard_eq_ncard]
+      exact hcard
+  · intro h
+    have hex : ∃ t : Finset (Fin n), G.IsNClique (d + 1) t := by
+      by_contra hc
+      exact h fun t ht => hc ⟨t, ht⟩
+    obtain ⟨s, hs⟩ := hex
+    obtain ⟨c, hsupp⟩ := hs.exists_connectedComponent_supp_eq hdeg
+    have hspos : 0 < s.card := by rw [hs.card_eq]; omega
+    obtain ⟨v, hv⟩ := Finset.card_pos.mp hspos
+    have hvC : G.connectedComponentMk v = c :=
+      (SimpleGraph.ConnectedComponent.mem_supp_iff c v).mp
+        (by rw [hsupp]; exact Finset.mem_coe.mpr hv)
+    have hmem (w : Fin n) : G.Reachable v w ↔ w ∈ (↑s : Set (Fin n)) := by
+      rw [← hsupp, SimpleGraph.ConnectedComponent.mem_supp_iff, ← hvC,
+        SimpleGraph.ConnectedComponent.eq, SimpleGraph.reachable_comm]
+    have hcard : Fintype.card {w // G.Reachable v w} = d + 1 := by
+      have hsub : {w : Fin n // G.Reachable v w} ≃
+          {w : Fin n // w ∈ (↑s : Set (Fin n))} := Equiv.subtypeEquivRight hmem
+      rw [Fintype.card_congr hsub]
+      exact Fintype.card_coe s |>.trans hs.card_eq
+    exact ⟨v, ⟨Fintype.equivFinOfCardEq hcard⟩, fun a b ha hb hab =>
+      hs.isClique ((hmem a).mp ha) ((hmem b).mp hb) hab⟩
 
 end FKSProblem1

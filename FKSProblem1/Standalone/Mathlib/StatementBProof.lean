@@ -26,9 +26,10 @@ Distance from zero is the norm, so statement A's spherical facts transfer verbat
 `K₃` is a unit-distance graph in `ℝ²` and not a spherical one: three pairwise orthogonal
 nonzero vectors do not fit in a plane. The star on four vertices sends its three leaves into
 the orthogonal of the centre, a line, so the placement cannot be injective. `K_d` sits on the
-sphere in `ℝᵈ` at the scaled basis. `K_{d+1} ⊔ K₁` has a `K_{d+1}` component and does not.
-`K_{3,3}` needs two orthogonal planes, and `K₅` and `K₆` need more than four orthogonal
-directions.
+sphere in `ℝᵈ` at the scaled basis. `K_{d + 1} ⊔ K₁` has a `K_{d + 1}` component and does not.
+`K_{3, 3}` needs two orthogonal planes, and `K₅` and `K₆` need more than four orthogonal
+directions. The first target follows from statement A's bounded target through the vertex-count
+and predicate conversions of `questionBounded_iff`.
 -/
 
 public section
@@ -330,6 +331,21 @@ theorem FirstTarget.dropHcomponent.proof : FirstTarget.dropHcomponent := by
   intro h
   exact not_spherical_top (by decide : (4 : ℕ) < 5) <|
     h 4 (by decide) ⟨5, by decide⟩ (completeGraph (Fin 5)) k5_degree_le
+
+/-! ### The first target -/
+
+/-- Statement B's first target: for every `d > 3`, every graph on at most `2 * d` vertices whose
+neighbor sets all have at most `d` vertices and which has no component isomorphic to
+`K_{d + 1}` has an injective spherical unit-distance representation in `ℝᵈ`. It is statement A's
+bounded target restated through the vertex-count and predicate conversions. -/
+theorem FirstTarget.proof : FirstTarget := by
+  intro d hd n G hdeg hcomp
+  exact (questionBounded_iff d).mpr
+    (fun m H hm hdeg' hcomp' => (spherical_iff d H).mp
+      (Problem1Bounded.proof d hd m H hm
+        ((FKSProblem1.maxDegree_le_iff_neighborSet_ncard_le H).mpr hdeg')
+        ((not_hasCompleteComponent_iso d H).mpr hcomp')))
+    n G hdeg hcomp
 
 end
 
