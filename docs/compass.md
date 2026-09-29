@@ -11,7 +11,7 @@ Everything else, including every later proof and the GraphDimension library, is 
 **The frozen text** is statement A: `FKSProblem1/Standalone/Mathlib/StatementA.lean`, namespace
 `FKSProblem1.StatementA`, at FKSProblem1 `6aaca0c`.
 
-**Owner sign-off: confirmed on 2026-09-28 for rows 1–15.** In the open-question manager's session, the owner answered "Freeze" to the request to sign this list, as committed at `d84e9ec`. The sign-off freezes the statement: statement A at `6aaca0c`, blob `6310931b942b7a7e9fa28e68a9fe469dd869c1ca`. Any change to a row cancels it.
+**Owner sign-off: confirmed on 2026-09-28 for rows 1–15.** (2026-09-29: row 2's source citation made precise after the release review; the row's meaning is unchanged.) In the open-question manager's session, the owner answered "Freeze" to the request to sign this list, as committed at `d84e9ec`. The sign-off freezes the statement: statement A at `6aaca0c`, blob `6310931b942b7a7e9fa28e68a9fe469dd869c1ca`. Any change to a row cancels it.
 
 ## How the statement was made
 
@@ -36,7 +36,7 @@ Everything else, including every later proof and the GraphDimension library, is 
 | # | Declaration | Must mean | Check |
 |---|---|---|---|
 | 1 | `HasSphericalDimAtMost d G` | there is an **injective** map from the vertices of `G : SimpleGraph (Fin n)` into `ℝᵈ` with every vertex at norm exactly `1/√2` and every **edge** at distance exactly 1 | Non-edges are unconstrained (Erdős–Harary–Tutte, as in P9). On this sphere, distance 1 is orthogonality. FKS's `Sph^{d-1}` has radius `1/√2` (l. 57). |
-| 2 | `HasCompleteComponent d G` | some connected component of `G` is `K_{d+1}`: a vertex whose reachability class has exactly `d + 1` vertices, any two distinct ones adjacent | The **corrected** exception (A40). Read literally, "except `K_{d+1}`" is false: `K_{d+1} ⊔ K₁` has maximum degree `d`, is not `K_{d+1}`, and needs `d + 1` dimensions. FKS's own `d = 3` theorem excepts `K_{3,3}` "as a component". |
+| 2 | `HasCompleteComponent d G` | some connected component of `G` is `K_{d+1}`: a vertex whose reachability class has exactly `d + 1` vertices, any two distinct ones adjacent | The **corrected** exception (A40). Read literally, "except `K_{d+1}`" is false: `K_{d+1} ⊔ K₁` has maximum degree `d`, is not `K_{d+1}`, and needs `d + 1` dimensions. FKS's `d = 3` theorem says "contains `K_{3,3}`" (l. 72); the paper restates it before Problem 1 as "has `K_{3,3}` as a component" (l. 431), and under the degree bound the two agree. |
 | 3 | `Problem1At d` | for every `n` and every `G` on `Fin n` with `G.maxDegree ≤ d` and no `K_{d+1}` component, `HasSphericalDimAtMost d G` | "Maximum degree `d`" is read as **at most** `d`. FKS's Proposition (l. 77) already gives maximum degree `d − 1`, so the two readings have the same truth value. |
 | 4 | `Problem1` | `Problem1At d` for every `d > 3` | **The frozen open question.** It is not claimed proved. |
 | 5 | `Problem1At4` | `Problem1At 4` | Open; the smallest undecided instance. Not a target of phase 1. |

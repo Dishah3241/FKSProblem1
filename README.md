@@ -37,18 +37,17 @@ new result; the unrestricted problem remains open.
 | Comparator | Accepted by Lean and NanoDa in the local macOS run ([record](docs/comparator-2026-09-29.md)) |
 | Library | [GraphDimension at the pinned revision](https://github.com/Dishah3241/GraphDimension/tree/db8062bb838b4ac31ea4d5648ea2a8b51685cfa0); main proof `SimpleGraph.SphereEmbeddable.of_card_le_two_mul` |
 | Statement review | Two statements authored blind and proved equivalent in [Stage1](FKSProblem1/Stage1/Equivalence.lean); owner signed [Compass rows 1–15](docs/compass.md) on 2026-09-28 |
-| Release review | Read-only review by grok (xAI): pending |
+| Release review | opencode (muse-spark-1.3), run `20260929-143246-251327e6`: "publish after fixes", both fixes applied ([record](docs/review-2026-09-29.md)) |
 | Blueprint | [Source](blueprint/src/content.tex); publication pending |
 | `formal-conjectures` | Statement authored here; the manager's parallel open-statement submission is separate from this bounded proof |
 | Mathlib | Reusable proof machinery is in GraphDimension; no Mathlib PR for this release |
 | Palomar | Not yet submitted |
 
-**Manager action — review:** the read-only grok (xAI) release review is pending; fill in its
-run, evidenced model, verdict and disposition before submission. grok models wrote the
-saturated-clique and indexed-matching leaves in GraphDimension and the fidelity companions
-in this repository. This is a separate review session, not a review by a lineage that wrote
-none of the proof. The managing agent, Claude Code (Claude Opus 5.5), contributed integration
-and fixes, including the bridge's location, layering and release coordination.
+**Review.** A release review by opencode (muse-spark-1.3), a model family that wrote none of this proof or its
+library leaves, found the statement faithful, the target right and every gate passing, and asked for two
+documentation fixes, both applied ([record](docs/review-2026-09-29.md)). grok is not independent here: it wrote
+GraphDimension's L1 and M1 leaves and this repository's fidelity companions. The managing agent, Claude Code (Claude
+Opus 5.5), contributed integration and fixes, including the bridge's location, layering and release coordination.
 
 ## The statement
 

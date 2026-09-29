@@ -32,7 +32,7 @@ Two readings the source leaves open are settled where they occur, each with its 
 "maximum degree `d`" is read as the upper bound `G.maxDegree ≤ d`, as the paper's own arguments
 use it, and "except `K_{d+1}`" is read componentwise, as "no connected component isomorphic to
 `K_{d+1}`" (`¬ HasCompleteComponent d G`), since the literal exception is refuted by
-`K_{d+1} ⊔ K₁` and the paper's own `d = 3` exception is phrased componentwise.
+`K_{d+1} ⊔ K₁` and the paper restates its own `d = 3` exception componentwise (`main.tex` l. 431).
 
 `Problem1At` is the question at one fixed `d`; `Problem1` is the question for every `d > 3`;
 `Problem1At4` is the `d = 4` instance; `Problem1BoundedAt` and `Problem1Bounded` restrict the
@@ -91,8 +91,10 @@ literally, as excepting only the graph that *is* `K_{d+1}`, the question becomes
 `K_{d+1} ⊔ K₁` has maximum degree `d`, is not `K_{d+1}`, and has spherical dimension `d + 1`,
 since its `K_{d+1}` component forces `d + 1` pairwise orthogonal vectors of norm `1 / √2`, and
 `d + 1` nonzero pairwise orthogonal vectors in `ℝᵈ` are linearly independent. The paper's own
-`d = 3` theorem excepts exactly the graphs having `K_{3,3}` as a component, i.e. it phrases its
-exception componentwise. Under the standing hypothesis `G.maxDegree ≤ d` the component reading is
+`d = 3` theorem says "contains `K_{3,3}`" (`main.tex` l. 72), and the paper restates it just
+before Problem 1 as "has `K_{3,3}` as a component" (l. 431), the form its proof uses (l. 218);
+under the degree bound the two agree, since a `K_{3,3}` subgraph saturates its vertices.
+Under the standing hypothesis `G.maxDegree ≤ d` the component reading is
 equivalent to forbidding `K_{d+1}` as a subgraph and as a clique: a `K_{d+1}` clique already
 exhausts the `d` neighbours of each of its vertices, so no edge leaves it. -/
 def HasCompleteComponent (d : ℕ) {n : ℕ} (G : SimpleGraph (Fin n)) : Prop :=
