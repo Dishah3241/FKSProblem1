@@ -99,7 +99,7 @@ root = "scripts.Layering"
 [[require]]
 name = "GraphDimension"
 git = "https://github.com/Dishah3241/GraphDimension"
-rev = "9acc3a712d477b79c3a699c160b20726309eb3c6"
+rev = "db8062bb838b4ac31ea4d5648ea2a8b51685cfa0"
 
 [[require]]
 name = "checkdecls"
