@@ -21,9 +21,11 @@ public section
 
 namespace FKSProblem1.Palomar
 
-/-- Any two distinct elements of `{2, 3, 5}` are coprime. -/
+/-- FKS Problem 1 restricted to graphs on at most `2 * d` vertices, for every `d > 3`: every
+graph of maximum degree at most `d` with no connected component isomorphic to `K_{d+1}` has
+spherical dimension at most `d`. -/
 theorem target :
-    FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.SmallPrimesCoprime :=
-  FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.SmallPrimesCoprime.proof
+    FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.Problem1Bounded :=
+  FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.Problem1Bounded.proof
 
 end FKSProblem1.Palomar

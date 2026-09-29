@@ -26,7 +26,7 @@ private structure AuditConfig where
 
 private def defaultConfig : AuditConfig where
   moduleName := `FKSProblem1.Standalone.Mathlib.InlineFKSProblem1
-  root := `FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.SmallPrimesCoprime
+  root := `FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.Problem1Bounded
 
 private def AuditConfig.privatePrefix (config : AuditConfig) : Name :=
   ("_private." ++ config.moduleName.toString).toName

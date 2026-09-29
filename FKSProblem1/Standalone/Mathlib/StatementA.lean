@@ -215,12 +215,11 @@ def Problem1BoundedAt.separating : Prop :=
     G.maxDegree ≤ d ∧ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
     ¬ (n = d + 1 ∧ ∀ a b : Fin n, a ≠ b → G.Adj a b)
 
-/-- Open problem. The restriction of FKS Problem 1 to graphs on at most `2 * d` vertices, for
+/-- The restriction of FKS Problem 1 to graphs on at most `2 * d` vertices, for
 every `d > 3`: the first target. At `d = 3` the restricted instance is already false — `K_{3,3}`
 on exactly `2 * 3` vertices has maximum degree `3`, no `K₄` component (it is bipartite), and no
 spherical placement in `ℝ³`, since each of its two parts spans a subspace of dimension at least
-two, the two spans are orthogonal, and `2 + 2 > 3` — while for `d ≥ 4` the restricted question is
-open. -/
+two, the two spans are orthogonal, and `2 + 2 > 3`. -/
 def Problem1Bounded : Prop := ∀ (d : ℕ) (_hd3 : 3 < d), Problem1BoundedAt d
 
 open Classical in
@@ -244,11 +243,13 @@ end FKSProblem1.StatementA
 
 ## Formal proof
 
-Every closed claim of this module is an open question, so none of them has a `Claim.proof` yet;
-the sibling module `StatementAProof` is where such proofs would land if a question below is
-settled.
+Proved in `StatementAProof`. `Problem1Bounded` is the proved first target; the `separating`,
+`witness` and `dropHd3` lines link the fidelity companions of the claims that carry them.
 
-* `Problem1` → open: the question of Frankl, Kupavskii and Swanepoel is stated here, not settled.
-* `Problem1At4` → open: the `d = 4` instance is the first one the source leaves undecided.
-* `Problem1Bounded` → open: the at-most-`2 * d`-vertices restriction is the stated first target.
+* `Problem1` → open: FKS 2020 Problem 1
+* `Problem1At4` → open: FKS 2020 Problem 1
+* `Problem1Bounded` → `Problem1Bounded.proof`
+* `separating` → `separating.proof`
+* `witness` → `witness.proof`
+* `dropHd3` → `dropHd3.proof`
 -/

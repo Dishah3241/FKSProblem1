@@ -10,26 +10,159 @@
 % in the built project. That check is what keeps this document from drifting away from the Lean,
 % so never write a \lean{} you have not built, and run it before every push.
 
-\chapter{FKS Problem 1: graphs of maximum degree $d$ embed on a sphere in $\mathbb{R}^d$}
+\chapter{FKS Problem 1: the first target}
 
-\begin{definition}[Pairwise coprimality]
-  \label{def:pairwise-coprime}
-  \lean{FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.PairwiseCoprime}
+\section{Notation}
+
+Graphs are finite and simple. A graph $G$ has \emph{spherical dimension at most $d$} when its
+vertices admit an injective placement in $\mathbb{R}^d$ with every vertex on the sphere of
+radius $1/\sqrt{2}$ centred at the origin and every edge joining two points at distance exactly
+$1$; non-adjacent pairs are unconstrained and may also lie at distance $1$. The source is
+N.~Frankl, A.~Kupavskii and K.~J.~Swanepoel, \emph{Embedding graphs in Euclidean space},
+J.~Combin.~Theory Ser.~A \textbf{171} (2020), 105146; its Definition~2 (realizability) with
+its Definition~3 (spherical dimension) on the sphere $S^{d-1}$ of radius $1/\sqrt{2}$.
+
+Two readings the source leaves open are settled where they occur, each with its reason.
+``Maximum degree $d$'' is read as the upper bound $\Delta(G) \le d$, as the paper's own
+arguments use it. ``Except $K_{d+1}$'' is read componentwise: no connected component of $G$ is
+isomorphic to $K_{d+1}$. The literal exception is refuted by $K_{d+1} \sqcup K_1$, whose
+spherical dimension is $d + 1$, while the paper's own $d = 3$ theorem phrases its exception
+componentwise.
+
+\section{The question}
+
+\begin{definition}[Spherical dimension at most $d$]
+  \label{def:spherical}
+  \lean{FKSProblem1.StatementA.HasSphericalDimAtMost}
   \leanok
-  A finite set of naturals is \emph{pairwise coprime} when any two distinct elements are coprime.
+  The predicate $G \le_d S$ of the preceding section, on the vertex set $\mathrm{Fin}\; n$.
+  The empty graph qualifies in every $d$; a single vertex needs $d \ge 1$, since the norm of
+  the only point of $\mathbb{R}^0$ is not $1/\sqrt{2}$.
 \end{definition}
 
-\begin{lemma}[Small primes are pairwise coprime]
-  \label{lem:small-primes-coprime}
-  \lean{FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.SmallPrimesCoprime}
+\begin{definition}[Complete component]
+  \label{def:complete-component}
+  \lean{FKSProblem1.StatementA.HasCompleteComponent}
   \leanok
-  \uses{def:pairwise-coprime}
-  The set $\{2, 3, 5\}$ is pairwise coprime.
-\end{lemma}
+  Some vertex has exactly $d + 1$ reachable vertices --- its connected component, bijective
+  with $\mathrm{Fin}\,(d+1)$ --- any two distinct ones being adjacent. Under the degree bound
+  $\Delta(G) \le d$ this is equivalent to the presence of a clique of order $d + 1$
+  (Lemma~\ref{lem:component-bridge}), since such a clique already exhausts the $d$ neighbours
+  of each of its vertices.
+\end{definition}
+
+\begin{conjecture}[Frankl--Kupavskii--Swanepoel, Problem 1]
+  \label{que:fks}
+  \lean{FKSProblem1.StatementA.Problem1At, FKSProblem1.StatementA.Problem1}
+  \uses{def:spherical,def:complete-component}
+  For every $d > 3$, every graph with $\Delta(G) \le d$ and no connected component isomorphic
+  to $K_{d+1}$ has spherical dimension at most $d$. This is open. The instances
+  $d = 1, 2, 3$ are false (three isolated vertices, the five-cycle, the cube), and the source
+  settles no case at $d \ge 4$. A second, independently written statement of the same question
+  (Statement B, `FKSProblem1.StatementB.Question`) is equivalent to it at every $d$, by the
+  equivalence module `FKSProblem1.Stage1.Equivalence`; the equivalence rests on the same
+  identifications as Lemma~\ref{lem:equivalence}.
+\end{conjecture}
+
+\begin{conjecture}[The four-dimensional instance]
+  \label{que:four}
+  \lean{FKSProblem1.StatementA.Problem1At4}
+  \uses{que:fks}
+  The instance of Conjecture~\ref{que:fks} at $d = 4$: every graph of maximum degree at most
+  $4$ with no $K_5$ component has spherical dimension at most $4$. This is the smallest
+  undecided instance, and it is open.
+\end{conjecture}
+
+\section{The first target}
+
+\begin{definition}[The bounded question at one dimension]
+  \label{def:bounded-at}
+  \lean{FKSProblem1.StatementA.Problem1BoundedAt}
+  \leanok
+  \uses{def:spherical,def:complete-component}
+  The question of Conjecture~\ref{que:fks} at a fixed $d$, restricted to graphs on at most
+  $2d$ vertices. The bound is loose enough to keep the known obstructions in play:
+  $K_{d+1} \sqcup K_1$ has $d + 2 \le 2d$ vertices exactly when $d \ge 2$, and $K_{3,3}$ has
+  $6 \le 2 \cdot 3$ vertices. At $d = 3$ the restricted instance is already false.
+\end{definition}
+
+\begin{theorem}[The first target]
+  \label{thm:first-target}
+  \lean{FKSProblem1.StatementA.Problem1Bounded,
+    FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.Problem1Bounded}
+  \leanok
+  \uses{def:bounded-at}
+  For every $d > 3$, every graph on at most $2d$ vertices with $\Delta(G) \le d$ and no
+  connected component isomorphic to $K_{d+1}$ has spherical dimension at most $d$. This is
+  the first target: the restriction of FKS Problem 1 to at most $2d$ vertices, proved in
+  Statement A's encoding and repeated with the same body in the inlined Mathlib-only
+  statement advertised to Palomar. Statement B's encoding
+  (`FKSProblem1.StatementB.FirstTarget`) is equivalent by the equivalence module, so the
+  target is one claim, not two.
+\end{theorem}
 
 \begin{proof}
   \leanok
-  \uses{def:pairwise-coprime}
-  Each pair is distinct and shares no prime factor, so the claim is decidable and holds by
-  computation.
+  \uses{lem:degree-bridge,lem:component-bridge,lem:library,lem:spherical-bridge}
+  The degree bound becomes the neighbour-set bound
+  (Lemma~\ref{lem:degree-bridge}), the component exception becomes the absence of a clique of
+  order $d + 1$ (Lemma~\ref{lem:component-bridge}), Lemma~\ref{lem:library} places the graph
+  on the sphere in $\mathbb{R}^d$ from the vertex count $n \le 2d$, and
+  Lemma~\ref{lem:spherical-bridge} returns the placement to the statement's predicate.
 \end{proof}
+
+\section{Bridges}
+
+\begin{lemma}[Degree bridge]
+  \label{lem:degree-bridge}
+  \lean{FKSProblem1.maxDegree_le_iff_neighborSet_ncard_le}
+  \leanok
+  $\Delta(G) \le d$ holds exactly when every neighbour set has at most $d$ elements,
+  including for the empty graph, where $\Delta(G) = 0$ and the quantifier is vacuous.
+\end{lemma}
+
+\begin{lemma}[Component bridge]
+  \label{lem:component-bridge}
+  \lean{FKSProblem1.hasCompleteComponent_iff_not_cliqueFree}
+  \leanok
+  \uses{lem:degree-bridge}
+  Under the neighbour-set bound, having a complete component on $d + 1$ vertices is exactly
+  failing to be $(d+1)$-clique-free. One direction is Definition~\ref{def:complete-component}
+  read as a clique; for the other, a clique of order $d + 1$ leaves no room for an edge to
+  leave it, so it is the support of a connected component.
+\end{lemma}
+
+\begin{lemma}[Spherical bridge]
+  \label{lem:spherical-bridge}
+  \lean{FKSProblem1.hasSphericalDimAtMost_iff_sphereEmbeddable}
+  \leanok
+  \uses{def:spherical}
+  The statement's spherical predicate agrees with the shared library's
+  \emph{sphere embeddability}: an injective placement whose vertices have norm $1/\sqrt{2}$
+  is exactly one whose vertices have squared norm $1/2$, since a norm is nonnegative and both
+  constants are positive and square to each other.
+\end{lemma}
+
+\begin{lemma}[The library's at-most-$2d$-vertex theorem]
+  \label{lem:library}
+  \lean{SimpleGraph.SphereEmbeddable.of_card_le_two_mul}
+  \leanok
+  \uses{lem:degree-bridge,lem:component-bridge}
+  Every graph on at most $2d$ vertices whose neighbour sets all have at most $d$ elements and
+  which has no clique of order $d + 1$ has a spherical placement in $\mathbb{R}^d$ for
+  $d \ge 4$ (GraphDimension, at the pinned revision). It pads with isolated vertices to order
+  exactly $2d$, applies the half-order dichotomy --- the complement has a perfect matching or
+  the graph is bipartite --- and restricts the placement of the padded graph along the first
+  summand.
+\end{lemma}
+
+\begin{lemma}[Equivalence of the two statements]
+  \label{lem:equivalence}
+  \leanok
+  \uses{def:spherical,def:complete-component,def:bounded-at}
+  The two independently written statements of the question, Statement A and Statement B, are
+  equivalent (`FKSProblem1.Stage1.problem1Bounded_iff`, `FKSProblem1.Stage1.problem1_iff`):
+  the placement conditions agree because a distance from the origin equals a norm, the degree
+  bound is the neighbour-set bound, the component exceptions agree, and a natural vertex
+  count $n \le 2d$ is equivalently an index in $\mathrm{Fin}\,(2d+1)$.
+\end{lemma}

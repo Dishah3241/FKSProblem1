@@ -128,8 +128,8 @@ def QuestionAtMostTwoMulAt (d : ℕ) : Prop :=
       (∀ v, dist (f v) 0 = 1 / Real.sqrt 2) ∧
       ∀ v w, G.Adj v w → dist (f v) (f w) = 1
 
-/-- Open problem: the first target, for every `d > 3` and every graph
-on at most `2 * d` vertices. -/
+/-- The first target: for every `d > 3` and every graph on at most `2 * d` vertices, the
+corrected FKS question holds. -/
 def FirstTarget : Prop :=
   ∀ d : ℕ,
   ∀ (_hdim : 3 < d),
@@ -324,11 +324,17 @@ def FirstTarget.dropHcomponent : Prop :=
 /-!
 ## Formal proof
 
-* `QuestionAt` → open: the corrected fixed-dimensional FKS question.
-* `Question` → open: the corrected full FKS question.
-* `QuestionFour` → open: the four-dimensional instance.
-* `QuestionAtMostTwoMulAt` → open: the fixed-dimensional vertex restriction.
-* `FirstTarget` → open: the owner's first target, the vertex restriction in every `d > 3`.
+Proved in `StatementBProof`. `FirstTarget` is the proved first target; the `witness`,
+`separating`, `dropHdim`, `dropHdegree` and `dropHcomponent` lines link every fidelity companion.
+
+* `Question` → open: FKS 2020 Problem 1
+* `QuestionFour` → open: FKS 2020 Problem 1
+* `FirstTarget` → `FirstTarget.proof`
+* `witness` → `witness.proof`
+* `separating` → `separating.proof`
+* `dropHdim` → `dropHdim.proof`
+* `dropHdegree` → `dropHdegree.proof`
+* `dropHcomponent` → `dropHcomponent.proof`
 -/
 
 end FKSProblem1.StatementB
