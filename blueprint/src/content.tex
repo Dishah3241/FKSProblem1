@@ -1,6 +1,21 @@
 % The actual content of the blueprint, used by both the web and print versions.
 % Do not include \begin{document}.
 %
+% Stage 2 blueprint for P10: FKS Problem 1 restricted to graphs on at most 2d vertices,
+% proved here for every d >= 4. The structure and the mathematics follow the design report
+% docs/research/2026-09-28-p10-d1-design.md, section "Stage 2 blueprint", with the \lean{}
+% names of the declarations that actually exist at the pinned GraphDimension revision
+% db8062b and in this repository.
+%
+% Grounding: Frankl, Kupavskii and Swanepoel, "Embedding graphs in Euclidean space",
+% J. Combin. Theory A 171 (2020) 105146, arXiv 1802.03092; the question is its Problem 1
+% (l.~433 of the LaTeX source). The general results live in the shared library
+% GraphDimension, which this project consumes through the bridge
+% (FKSProblem1.Standalone.Mathlib.Support.GraphDimensionBridge) and the proof sibling
+% (FKSProblem1.Standalone.Mathlib.StatementAProof); their \lean{} names are library
+% declarations inside this project's import closure. The statement side lives in this
+% repository: FKSProblem1.Standalone.Mathlib.StatementA and its proof sibling.
+%
 % Each node carries:
 %   \lean{Full.Declaration.Name}  the Lean declaration this node IS
 %   \leanok                        this node is fully formalized
@@ -9,160 +24,475 @@
 % `leanblueprint checkdecls` verifies every \lean{...} names a declaration that actually exists
 % in the built project. That check is what keeps this document from drifting away from the Lean,
 % so never write a \lean{} you have not built, and run it before every push.
+% Every node below is proved, so each carries \leanok --- except the question itself,
+% which is open and does not.
 
-\chapter{FKS Problem 1: the first target}
+\chapter{FKS Problem 1 for graphs on at most twice the dimension}
+
+The proved first target: every graph on at most $2 d$ vertices whose vertices each have at
+most $d$ neighbours and which has no complete component of order $d + 1$ sits on the sphere
+of radius $1/\sqrt2$ about the origin of $\mathbb{R}^d$, for every $d \ge 4$. The general
+question of Frankl--Kupavskii--Swanepoel remains open. Placements are injective and
+non-edges are unconstrained; on the sphere, distance one is orthogonality. The proof runs
+through the shared library: bridges translate the frozen statement into the library's
+predicates, a degree bound carries to the complement, Tutte's theorem splits the complement
+into a perfect matching or a bipartition, and the cross-polytope and two-circle placements
+finish it.
 
 \section{Notation}
 
-Graphs are finite and simple. A graph $G$ has \emph{spherical dimension at most $d$} when its
-vertices admit an injective placement in $\mathbb{R}^d$ with every vertex on the sphere of
-radius $1/\sqrt{2}$ centred at the origin and every edge joining two points at distance exactly
-$1$; non-adjacent pairs are unconstrained and may also lie at distance $1$. The source is
-N.~Frankl, A.~Kupavskii and K.~J.~Swanepoel, \emph{Embedding graphs in Euclidean space},
-J.~Combin.~Theory Ser.~A \textbf{171} (2020), 105146; its Definition~2 (realizability) with
-its Definition~3 (spherical dimension) on the sphere $S^{d-1}$ of radius $1/\sqrt{2}$.
-
-Two readings the source leaves open are settled where they occur, each with its reason.
-``Maximum degree $d$'' is read as the upper bound $\Delta(G) \le d$, as the paper's own
-arguments use it. ``Except $K_{d+1}$'' is read componentwise: no connected component of $G$ is
-isomorphic to $K_{d+1}$. The literal exception is refuted by $K_{d+1} \sqcup K_1$, whose
-spherical dimension is $d + 1$, while the paper's own $d = 3$ theorem phrases its exception
-componentwise.
+$|V|$ is the order of $G$; $\overline{G}$ is the complement on the same vertex set; and
+$K_{d+1} \sqcup K_1$ is the disjoint union of a $K_{d+1}$ with an isolated vertex.
+``Every vertex has at most $d$ neighbours'' is the reading the source's arguments give
+``maximum degree $d$'': the upper bound $\mathrm{maxDegree}(G) \le d$, under which smaller
+degrees are disposed of by the bounded-degree proposition.
 
 \section{The question}
 
-\begin{definition}[Spherical dimension at most $d$]
+\begin{definition}[Spherical placement]
   \label{def:spherical}
-  \lean{FKSProblem1.StatementA.HasSphericalDimAtMost}
+  \lean{FKSProblem1.StatementA.HasSphericalDimAtMost,
+    SimpleGraph.SphereEmbeddable}
   \leanok
-  The predicate $G \le_d S$ of the preceding section, on the vertex set $\mathrm{Fin}\; n$.
-  The empty graph qualifies in every $d$; a single vertex needs $d \ge 1$, since the norm of
-  the only point of $\mathbb{R}^0$ is not $1/\sqrt{2}$.
+  A graph has \emph{spherical dimension at most $d$} when its vertices admit an injective
+  placement in $\mathbb{R}^d$ with every vertex on the sphere of radius $1/\sqrt2$ about the
+  origin, $\|f v\| = 1/\sqrt2$, and every edge joining two points at distance exactly $1$.
+  Non-adjacent pairs are unconstrained and may also land one unit apart: the
+  Erd\H{o}s--Harary--Tutte reading the source adopts (its Definition~2 notes the edge set
+  need not contain all unit-distance pairs). On this sphere, distance one is orthogonality.
+  The frozen statement's predicate and the shared library's predicate say the same thing,
+  the norm written squared on the library side, and are interchangeable by
+  Lemma~\ref{lem:bridge-spherical}. Degenerate cases: the empty graph qualifies in every
+  $d$, and a single vertex needs $d \ge 1$, since the sphere of $\mathbb{R}^0$ is a point.
 \end{definition}
 
-\begin{definition}[Complete component]
-  \label{def:complete-component}
+\begin{definition}[The exception, read componentwise]
+  \label{def:exception}
   \lean{FKSProblem1.StatementA.HasCompleteComponent}
   \leanok
-  Some vertex has exactly $d + 1$ reachable vertices --- its connected component, bijective
-  with $\mathrm{Fin}\,(d+1)$ --- any two distinct ones being adjacent. Under the degree bound
-  $\Delta(G) \le d$ this is equivalent to the presence of a clique of order $d + 1$
-  (Lemma~\ref{lem:component-bridge}), since such a clique already exhausts the $d$ neighbours
-  of each of its vertices.
+  A graph \emph{has a complete component of order $d+1$} when some connected component is
+  isomorphic to $K_{d+1}$: some vertex has exactly $d+1$ reachable vertices, any two
+  distinct ones being adjacent. This is the corrected reading of Problem~1's exception
+  ``except $K_{d+1}$''. Read literally, as excepting only the graph that \emph{is}
+  $K_{d+1}$, the question is false: $K_{d+1} \sqcup K_1$ has maximum degree $d$, is not
+  $K_{d+1}$, and has spherical dimension $d + 1$, since its clique component would force
+  $d + 1$ pairwise orthogonal vectors of norm $1/\sqrt2$ in $\mathbb{R}^d$, and pairwise
+  orthogonal nonzero vectors are linearly independent. The source's own degree-three
+  theorem excepts exactly the graphs having $K_{3,3}$ as a component, so the precedent is
+  componentwise. Under the degree bound, the component reading is equivalent to forbidding
+  $K_{d+1}$ as a subgraph (Lemma~\ref{lem:bridge-component}).
 \end{definition}
 
 \begin{conjecture}[Frankl--Kupavskii--Swanepoel, Problem 1]
   \label{que:fks}
-  \lean{FKSProblem1.StatementA.Problem1At, FKSProblem1.StatementA.Problem1}
-  \uses{def:spherical,def:complete-component}
-  For every $d > 3$, every graph with $\Delta(G) \le d$ and no connected component isomorphic
-  to $K_{d+1}$ has spherical dimension at most $d$. This is open. The instances
-  $d = 1, 2, 3$ are false (three isolated vertices, the five-cycle, the cube), and the source
-  settles no case at $d \ge 4$. A second, independently written statement of the same question
-  (Statement B, `FKSProblem1.StatementB.Question`) is equivalent to it at every $d$, by the
-  equivalence module `FKSProblem1.Stage1.Equivalence`; the equivalence rests on the same
-  identifications as Lemma~\ref{lem:equivalence}.
+  \lean{FKSProblem1.StatementA.Problem1}
+  \uses{def:spherical,def:exception}
+  For every $d > 3$, every graph of maximum degree at most $d$ with no connected component
+  isomorphic to $K_{d+1}$ has spherical dimension at most $d$ --- Problem~1 of
+  Frankl, Kupavskii and Swanepoel (2020), l.~433 of the LaTeX source. This is open: the
+  question is stated, not settled. Below four the instances are false: at $d = 1$ three
+  isolated vertices need three distinct points on the two-point sphere of $\mathbb{R}^1$
+  (proved by the statement's drop companion), at $d = 2$ the five-cycle, and at $d = 3$ the
+  cube, which is why the source poses the question for $d > 3$. The restriction to graphs
+  on at most $2 d$ vertices is proved in this repository for every $d > 3$
+  (Theorem~\ref{thm:bounded-target}); the general question remains open.
 \end{conjecture}
 
-\begin{conjecture}[The four-dimensional instance]
-  \label{que:four}
-  \lean{FKSProblem1.StatementA.Problem1At4}
-  \uses{que:fks}
-  The instance of Conjecture~\ref{que:fks} at $d = 4$: every graph of maximum degree at most
-  $4$ with no $K_5$ component has spherical dimension at most $4$. This is the smallest
-  undecided instance, and it is open.
-\end{conjecture}
+\section{Existing library interfaces}
 
-\section{The first target}
-
-\begin{definition}[The bounded question at one dimension]
-  \label{def:bounded-at}
-  \lean{FKSProblem1.StatementA.Problem1BoundedAt}
+\begin{definition}[Spherical placements in the library]
+  \label{lib:sphere}
+  \lean{SimpleGraph.SphereEmbeddable,
+    SimpleGraph.SphereEmbeddable.iff_orthogonal,
+    SimpleGraph.SphereEmbeddable.comap,
+    SimpleGraph.SphereEmbeddable.mono}
   \leanok
-  \uses{def:spherical,def:complete-component}
-  The question of Conjecture~\ref{que:fks} at a fixed $d$, restricted to graphs on at most
-  $2d$ vertices. The bound is loose enough to keep the known obstructions in play:
-  $K_{d+1} \sqcup K_1$ has $d + 2 \le 2d$ vertices exactly when $d \ge 2$, and $K_{3,3}$ has
-  $6 \le 2 \cdot 3$ vertices. At $d = 3$ the restricted instance is already false.
+  The library's spherical placement predicate puts every vertex on the prescribed sphere
+  and every edge at distance one. On the radius-$1/\sqrt2$ sphere, edge distance one is
+  equivalent to orthogonality. Placements pull back along injective graph homomorphisms
+  and persist in larger dimensions.
 \end{definition}
 
-\begin{theorem}[The first target]
-  \label{thm:first-target}
-  \lean{FKSProblem1.StatementA.Problem1Bounded,
-    FKSProblem1.Standalone.Mathlib.InlineFKSProblem1.Problem1Bounded}
+\begin{lemma}[Finite graph interfaces]
+  \label{lib:graphs}
+  \lean{SimpleGraph.degree_compl,
+    SimpleGraph.degree_le_maxDegree,
+    SimpleGraph.maxDegree_le_of_forall_degree_le,
+    SimpleGraph.Embedding.sumInl,
+    SimpleGraph.pairwise_disjoint_supp_connectedComponent}
   \leanok
-  \uses{def:bounded-at}
-  For every $d > 3$, every graph on at most $2d$ vertices with $\Delta(G) \le d$ and no
-  connected component isomorphic to $K_{d+1}$ has spherical dimension at most $d$. This is
-  the first target: the restriction of FKS Problem 1 to at most $2d$ vertices, proved in
-  Statement A's encoding and repeated with the same body in the inlined Mathlib-only
-  statement advertised to Palomar. Statement B's encoding
-  (`FKSProblem1.StatementB.FirstTarget`) is equivalent by the equivalence module, so the
-  target is one claim, not two.
+  Complementary degrees sum to the order minus one; every degree is at most the maximum
+  degree, and a uniform degree bound bounds the maximum degree; the first summand embeds in
+  a disjoint-sum graph; connected-component supports are pairwise disjoint.
+\end{lemma}
+
+\begin{theorem}[Tutte's theorem and odd-component parity]
+  \label{lib:tutte}
+  \lean{SimpleGraph.tutte,
+    SimpleGraph.IsTutteViolator,
+    SimpleGraph.odd_ncard_oddComponents,
+    SimpleGraph.Subgraph.isPerfectMatching_iff}
+  \leanok
+  A finite graph has a perfect matching exactly when no vertex set leaves more odd
+  components than its own cardinality; a set that does is a \emph{Tutte violator}. A
+  perfect matching is equivalently the assertion that every vertex has a unique mate. The
+  number of odd components has the parity of the graph's order.
 \end{theorem}
 
-\begin{proof}
+\begin{lemma}[Cross-polytope placement]
+  \label{lib:cross}
+  \lean{SimpleGraph.SphereEmbeddable.of_compl_matching}
   \leanok
-  \uses{lem:degree-bridge,lem:component-bridge,lem:library,lem:spherical-bridge}
-  The degree bound becomes the neighbour-set bound
-  (Lemma~\ref{lem:degree-bridge}), the component exception becomes the absence of a clique of
-  order $d + 1$ (Lemma~\ref{lem:component-bridge}), Lemma~\ref{lem:library} places the graph
-  on the sphere in $\mathbb{R}^d$ from the vertex count $n \le 2d$, and
-  Lemma~\ref{lem:spherical-bridge} returns the placement to the statement's predicate.
+  \uses{lib:sphere}
+  For $k \le d$, a graph on at most $d + k$ vertices with $k$ jointly distinct pairs of
+  distinct vertices that are not edges has a spherical placement in $\mathbb{R}^d$: the
+  matched vertices go to opposite coordinate axes scaled by $1/\sqrt2$, the rest, of which
+  there are at most $d - k$, to the unused basis vectors.
+\end{lemma}
+
+\begin{lemma}[Circles and orthogonal sums]
+  \label{lib:circles}
+  \lean{SimpleGraph.SphereEmbeddable.of_degree_le_two,
+    SimpleGraph.SphereEmbeddable.orthogonalSum}
+  \leanok
+  \uses{lib:sphere}
+  Every finite graph in which every vertex has at most one neighbour has a spherical
+  placement in $\mathbb{R}^2$. Placements of two complementary induced subgraphs combine
+  into a placement of the whole graph in orthogonal coordinate subspaces.
+\end{lemma}
+
+\section{Statement bridges and padding}
+
+% L1
+\begin{lemma}[Saturated cliques are components]
+  \label{lem:saturated-clique}
+  \lean{SimpleGraph.IsNClique.exists_connectedComponent_supp_eq}
+  \leanok
+  \uses{lib:graphs}
+  If every vertex has at most $d$ neighbours, every clique of order $d + 1$ is the support
+  of a connected component.
+\end{lemma}
+\begin{proof}
+  Each clique vertex already has its $d$ neighbours inside the clique, so no edge leaves
+  it; the component of a clique vertex therefore has the clique as its support.
 \end{proof}
 
-\section{Bridges}
-
-\begin{lemma}[Degree bridge]
-  \label{lem:degree-bridge}
-  \lean{FKSProblem1.maxDegree_le_iff_neighborSet_ncard_le}
-  \leanok
-  $\Delta(G) \le d$ holds exactly when every neighbour set has at most $d$ elements,
-  including for the empty graph, where $\Delta(G) = 0$ and the quantifier is vacuous.
-\end{lemma}
-
-\begin{lemma}[Component bridge]
-  \label{lem:component-bridge}
-  \lean{FKSProblem1.hasCompleteComponent_iff_not_cliqueFree}
-  \leanok
-  \uses{lem:degree-bridge}
-  Under the neighbour-set bound, having a complete component on $d + 1$ vertices is exactly
-  failing to be $(d+1)$-clique-free. One direction is Definition~\ref{def:complete-component}
-  read as a clique; for the other, a clique of order $d + 1$ leaves no room for an edge to
-  leave it, so it is the support of a connected component.
-\end{lemma}
-
-\begin{lemma}[Spherical bridge]
-  \label{lem:spherical-bridge}
+% B1
+\begin{lemma}[Spherical-predicate bridge]
+  \label{lem:bridge-spherical}
   \lean{FKSProblem1.hasSphericalDimAtMost_iff_sphereEmbeddable}
   \leanok
-  \uses{def:spherical}
-  The statement's spherical predicate agrees with the shared library's
-  \emph{sphere embeddability}: an injective placement whose vertices have norm $1/\sqrt{2}$
-  is exactly one whose vertices have squared norm $1/2$, since a norm is nonnegative and both
-  constants are positive and square to each other.
+  \uses{lib:sphere}
+  Statement A's spherical predicate
+  (Definition~\ref{def:spherical}) is equivalent to the library predicate.
 \end{lemma}
+\begin{proof}
+  For a nonnegative norm, $\|x\| = 1/\sqrt2$ is equivalent to $\|x\|^2 = 1/2$. The
+  injective map and the edge equations carry over unchanged.
+\end{proof}
 
-\begin{lemma}[The library's at-most-$2d$-vertex theorem]
-  \label{lem:library}
+% B2
+\begin{lemma}[Maximum-degree bridge]
+  \label{lem:bridge-degree}
+  \lean{FKSProblem1.maxDegree_le_iff_neighborSet_ncard_le}
+  \leanok
+  \uses{lib:graphs}
+  The maximum-degree bound is equivalent to every neighbour set having at most $d$
+  elements, including for the empty graph.
+\end{lemma}
+\begin{proof}
+  Use the upper bound of every degree by the maximum degree and its converse.
+\end{proof}
+
+% B3
+\begin{lemma}[Complete-component bridge]
+  \label{lem:bridge-component}
+  \lean{FKSProblem1.hasCompleteComponent_iff_not_cliqueFree}
+  \leanok
+  \uses{lem:saturated-clique}
+  Under the degree bound, having a complete component of order $d + 1$
+  (Definition~\ref{def:exception}) is equivalent to not being clique-free of order
+  $d + 1$.
+\end{lemma}
+\begin{proof}
+  A complete component gives the clique. Conversely, apply
+  Lemma~\ref{lem:saturated-clique} to a clique of order $d + 1$, choose a vertex in its
+  support, and identify the reachable-vertex subtype with the component support.
+\end{proof}
+
+% P
+\begin{lemma}[Padding with isolated vertices]
+  \label{lem:padding}
+  \lean{SimpleGraph.card_degree_cliqueFree_sum_bot}
+  \leanok
+  \uses{lib:graphs}
+  If $|V| \le N$ and $d \ge 1$, adjoining $N - |V|$ isolated vertices gives order $N$ and
+  preserves both the neighbour bound and the exclusion of a clique of order $d + 1$.
+\end{lemma}
+\begin{proof}
+  Take the graph sum with the edgeless graph on $N - |V|$ vertices. A clique of order
+  $d + 1 \ge 2$ cannot contain an added isolate.
+\end{proof}
+
+% D
+\begin{lemma}[Degree bound in the complement]
+  \label{lem:complement-degree}
+  \lean{SimpleGraph.le_compl_neighborSet_ncard_add_one}
+  \leanok
+  \uses{lib:graphs}
+  If $|V| = 2d$ and every vertex of $G$ has at most $d$ neighbours, every vertex of
+  $\overline{G}$ has at least $d - 1$.
+\end{lemma}
+\begin{proof}
+  Complementary degrees sum to the order minus one:
+  $\deg_G(v) + \deg_{\overline{G}}(v) + 1 = 2d$.
+\end{proof}
+
+\section{Perfect matchings}
+
+% M1
+\begin{lemma}[Indexed matching pairs]
+  \label{lem:indexed-pairs}
+  \lean{SimpleGraph.Subgraph.IsPerfectMatching.exists_indexed_edges}
+  \leanok
+  \uses{lib:tutte}
+  A perfect matching on $2d$ vertices consists of $d$ pairs, indexed by
+  $\{1, \dots, d\}$, whose $2d$ endpoints are pairwise distinct and each of whose pairs is
+  a matching edge.
+\end{lemma}
+\begin{proof}
+  The unique-mate map is a fixed-point-free involution. Keep, per pair, the endpoint that
+  is smaller in a fixed ordering of the vertices. Representatives and their mates partition
+  the vertex set, so there are exactly $d$ representatives.
+\end{proof}
+
+% M2
+\begin{lemma}[Placement from a complement perfect matching]
+  \label{lem:placement-matching}
+  \lean{SimpleGraph.SphereEmbeddable.of_compl_perfectMatching}
+  \leanok
+  \uses{lem:indexed-pairs,lib:cross}
+  If the complement of a graph on $2d$ vertices has a perfect matching, the graph has a
+  spherical placement in $\mathbb{R}^d$.
+\end{lemma}
+\begin{proof}
+  Index the matching pairs by Lemma~\ref{lem:indexed-pairs} and apply the cross-polytope
+  construction with $k = d$: the matched pairs are non-edges of $G$, and
+  $|V| = 2d \le d + d$.
+\end{proof}
+
+\section{Component cardinalities}
+
+% Q1
+\begin{lemma}[Counting selected components]
+  \label{lem:count-components}
+  \lean{SimpleGraph.mul_ncard_le_card_of_le_ncard_connectedComponent}
+  \leanok
+  \uses{lib:graphs}
+  If every component in a family $\mathcal{C}$ has at least $k$ vertices, then
+  $k |\mathcal{C}| \le |V|$.
+\end{lemma}
+\begin{proof}
+  The supports are pairwise disjoint with union contained in the vertex set, so the
+  cardinalities sum to at most $|V|$.
+\end{proof}
+
+% Q2
+\begin{lemma}[Equality forces singleton components]
+  \label{lem:singleton-components}
+  \lean{SimpleGraph.eq_bot_of_card_le_ncard_oddComponents}
+  \leanok
+  \uses{lib:graphs}
+  A graph with at least as many odd components as vertices is edgeless.
+\end{lemma}
+\begin{proof}
+  Choose one representative from each odd component. This injection must be surjective, so
+  each component is a singleton and there are no edges.
+\end{proof}
+
+% Q3
+\begin{lemma}[Component size after deletion]
+  \label{lem:component-size-deletion}
+  \lean{SimpleGraph.le_ncard_add_ncard_deleteVerts_component}
+  \leanok
+  \uses{lib:graphs}
+  Suppose every closed neighbourhood of $H$ has at least $d$ vertices. After deleting a
+  set $S$, every component $C$ of $H - S$ satisfies $d \le |S| + |C|$.
+\end{lemma}
+\begin{proof}
+  Choose $v \in C$. The closed neighbourhood of $v$ is contained in $S \cup C$, and its
+  two pieces at $v$ are disjoint, giving $1 + \deg v \le |S| + |C|$ and hence the stated
+  bound.
+\end{proof}
+
+% Q4
+\begin{lemma}[Counts for a Tutte violating set]
+  \label{lem:violator-counts}
+  \lean{SimpleGraph.IsTutteViolator.card_bounds}
+  \leanok
+  \uses{lem:count-components,lib:tutte}
+  In an even-order graph, a Tutte violating set of size $s$ leaves $q \ge s + 2$ odd
+  components, and $s + q \le |V|$.
+\end{lemma}
+\begin{proof}
+  The number of odd components left after deleting $S$ has the parity of $|V| - s$, hence
+  of $s$; with $q > s$ this forces $q \ge s + 2$. Each odd component contains at least one
+  vertex, so the deleted vertices and the odd components together fit in $|V|$.
+\end{proof}
+
+\section{The four Tutte cases}
+
+% R1
+\begin{lemma}[Sets of size between one and $d - 2$]
+  \label{lem:barrier-between}
+  \lean{SimpleGraph.not_isTutteViolator_of_card_between}
+  \leanok
+  \uses{lem:count-components,lem:component-size-deletion,lem:violator-counts}
+  On $2d$ vertices whose closed neighbourhoods all have at least $d$ vertices, no set with
+  $1 \le s \le d - 2$ violates Tutte's condition.
+\end{lemma}
+\begin{proof}
+  Each of the $q$ remaining odd components has at least $d - s$ vertices, so
+  $s + q(d - s) \le 2d$. But $q \ge s + 2$, and
+  \[
+    s + (s + 2)(d - s) = 2d + s(d - s - 1) > 2d,
+  \]
+  since $s \ge 1$ and $d - s - 1 \ge 1$.
+\end{proof}
+
+% R2
+\begin{lemma}[Sets of at least half the order]
+  \label{lem:barrier-half}
+  \lean{SimpleGraph.not_isTutteViolator_of_half_card_le}
+  \leanok
+  \uses{lem:violator-counts}
+  In a graph on $2d$ vertices, a set of size at least $d$ cannot violate Tutte's
+  condition.
+\end{lemma}
+\begin{proof}
+  The inequalities $s + q \le 2d$ and $s \ge d$ imply $q \le s$, against $q \ge s + 2$.
+\end{proof}
+
+% R3
+\begin{lemma}[Sets of size one less than half the order]
+  \label{lem:barrier-d-minus-one}
+  \lean{SimpleGraph.exists_isNClique_compl_of_isTutteViolator_card_add_one}
+  \leanok
+  \uses{lem:singleton-components,lem:violator-counts}
+  A Tutte violating set of size $d - 1$ in a graph on $2d$ vertices produces a clique of
+  order $d + 1$ in its complement.
+\end{lemma}
+\begin{proof}
+  Exactly $d + 1$ vertices remain and there are at least $d + 1$ odd components. Apply
+  Lemma~\ref{lem:singleton-components}: the remaining graph is edgeless, so its vertices
+  form the required complementary clique.
+\end{proof}
+
+% R0
+\begin{lemma}[The empty violating set]
+  \label{lem:barrier-empty}
+  \lean{SimpleGraph.exists_two_cliques_of_isTutteViolator_empty}
+  \leanok
+  \uses{lem:count-components,lem:component-size-deletion,lem:violator-counts}
+  Let $d > 0$, $|V| = 2d$, and every closed neighbourhood have at least $d$ vertices. If
+  the empty set violates Tutte's condition, then $d$ is odd and $V$ splits into two
+  disjoint complete sets of order $d$ with no cross edges.
+\end{lemma}
+\begin{proof}
+  There are at least two odd components, each of order at least $d$. Two disjoint supports
+  of order at least $d$ in $2d$ vertices each have order exactly $d$ and together cover
+  $V$, so no other component remains. Every vertex has all its at least $d - 1$
+  neighbours inside its component, which is consequently complete, and an odd component of
+  order $d$ makes $d$ odd.
+\end{proof}
+
+% T
+\begin{theorem}[Matching or bipartiteness]
+  \label{thm:dichotomy}
+  \lean{SimpleGraph.exists_compl_perfectMatching_or_isBipartite}
+  \leanok
+  \uses{lem:complement-degree,lem:barrier-between,lem:barrier-half,
+    lem:barrier-d-minus-one,lem:barrier-empty,lib:tutte}
+  Let $d \ge 1$. A graph on $2d$ vertices, every vertex with at most $d$ neighbours and no
+  clique of order $d + 1$, either has a perfect matching in its complement or is
+  bipartite.
+\end{theorem}
+\begin{proof}
+  If the complement has no perfect matching, Tutte's theorem gives a violating set $S$ in
+  the complement, whose closed neighbourhoods have at least $d$ vertices by
+  Lemma~\ref{lem:complement-degree}. The nonempty cases are impossible or
+  clique-producing: $1 \le s \le d - 2$ contradicts Lemma~\ref{lem:barrier-between},
+  $s \ge d$ contradicts Lemma~\ref{lem:barrier-half}, and $s = d - 1$ yields a clique of
+  order $d + 1$ in the original graph by Lemma~\ref{lem:barrier-d-minus-one}. The empty
+  case leaves two complete complementary components whose supports are independent in the
+  original graph, a bipartition.
+\end{proof}
+
+\section{Placement and assembly}
+
+% G
+\begin{lemma}[Two orthogonal circles]
+  \label{lem:bipartite-placement}
+  \lean{SimpleGraph.SphereEmbeddable.of_isBipartite,
+    SimpleGraph.sphereEmbeddable_completeBipartiteGraph}
+  \leanok
+  \uses{lib:circles,lib:sphere}
+  Every finite bipartite graph has a spherical placement in $\mathbb{R}^4$. In particular,
+  every finite complete bipartite graph has one in $\mathbb{R}^d$ for $d \ge 4$.
+\end{lemma}
+\begin{proof}
+  Place one side of a bipartition injectively on the radius-$1/\sqrt2$ circle of the first
+  coordinate plane and the remaining vertices on the circle of a second, orthogonal plane;
+  edges cross the bipartition, so they join orthogonal vectors. Larger $d$ appends zero
+  coordinates.
+\end{proof}
+
+% A1
+\begin{theorem}[Exactly twice the dimension]
+  \label{thm:twice-the-dimension}
+  \lean{SimpleGraph.SphereEmbeddable.of_card_eq_two_mul}
+  \leanok
+  \uses{thm:dichotomy,lem:placement-matching,lem:bipartite-placement,lib:sphere}
+  For $d \ge 4$, a graph on $2d$ vertices whose vertices all have at most $d$ neighbours
+  and with no clique of order $d + 1$ has a spherical placement in $\mathbb{R}^d$.
+\end{theorem}
+\begin{proof}
+  Apply the dichotomy: the cross-polytope placement of
+  Lemma~\ref{lem:placement-matching} in the matching case, the two-circle placement of
+  Lemma~\ref{lem:bipartite-placement}, promoted to $\mathbb{R}^d$, in the bipartite case.
+\end{proof}
+
+% A2
+\begin{theorem}[At most twice the dimension]
+  \label{thm:at-most-twice-the-dimension}
   \lean{SimpleGraph.SphereEmbeddable.of_card_le_two_mul}
   \leanok
-  \uses{lem:degree-bridge,lem:component-bridge}
-  Every graph on at most $2d$ vertices whose neighbour sets all have at most $d$ elements and
-  which has no clique of order $d + 1$ has a spherical placement in $\mathbb{R}^d$ for
-  $d \ge 4$ (GraphDimension, at the pinned revision). It pads with isolated vertices to order
-  exactly $2d$, applies the half-order dichotomy --- the complement has a perfect matching or
-  the graph is bipartite --- and restricts the placement of the padded graph along the first
-  summand.
-\end{lemma}
+  \uses{lem:padding,thm:twice-the-dimension,lib:sphere,lib:graphs}
+  The preceding conclusion holds for every finite graph on at most $2d$ vertices
+  satisfying the same degree and clique hypotheses.
+\end{theorem}
+\begin{proof}
+  Pad with isolated vertices to order $2d$ (Lemma~\ref{lem:padding}), place the padded
+  graph by Theorem~\ref{thm:twice-the-dimension}, and restrict along the first-summand
+  embedding.
+\end{proof}
 
-\begin{lemma}[Equivalence of the two statements]
-  \label{lem:equivalence}
+% F
+\begin{theorem}[Statement A's bounded target]
+  \label{thm:bounded-target}
+  \lean{FKSProblem1.StatementA.Problem1Bounded,
+    FKSProblem1.StatementA.Problem1Bounded.proof}
   \leanok
-  \uses{def:spherical,def:complete-component,def:bounded-at}
-  The two independently written statements of the question, Statement A and Statement B, are
-  equivalent (`FKSProblem1.Stage1.problem1Bounded_iff`, `FKSProblem1.Stage1.problem1_iff`):
-  the placement conditions agree because a distance from the origin equals a norm, the degree
-  bound is the neighbour-set bound, the component exceptions agree, and a natural vertex
-  count $n \le 2d$ is equivalently an index in $\mathrm{Fin}\,(2d+1)$.
-\end{lemma}
+  \uses{lem:bridge-spherical,lem:bridge-degree,lem:bridge-component,
+    thm:at-most-twice-the-dimension}
+  FKS Problem 1 for graphs on at most $2d$ vertices: for every $d > 3$, every such graph
+  of maximum degree at most $d$ with no complete component of order $d + 1$ has spherical
+  dimension at most $d$. This is the first target of the project; the unrestricted
+  Conjecture~\ref{que:fks} remains open.
+\end{theorem}
+\begin{proof}
+  Translate the degree bound and the component exception by the bridges
+  (Lemmas~\ref{lem:bridge-degree} and~\ref{lem:bridge-component}), apply
+  Theorem~\ref{thm:at-most-twice-the-dimension} at the vertex bound, and translate the
+  placement back through the spherical bridge (Lemma~\ref{lem:bridge-spherical}).
+\end{proof}
