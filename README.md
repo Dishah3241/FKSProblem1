@@ -41,7 +41,7 @@ new result; the unrestricted problem remains open.
 | Blueprint | [Source](blueprint/src/content.tex); publication pending |
 | `formal-conjectures` | Statement authored here; the manager's parallel open-statement submission is separate from this bounded proof |
 | Mathlib | Reusable proof machinery is in GraphDimension; no Mathlib PR for this release |
-| Palomar | Not yet submitted |
+| Palomar | [PALOMAR-2026-09-30-000028](https://palomar-registry.org/entry.html?id=PALOMAR-2026-09-30-000028&version=1), registered at commit `2779dea`, trust level high ([record](docs/palomar-2026-09-29.md)) |
 
 **Review.** A release review by opencode (muse-spark-1.3), a model family that wrote none of this proof or its
 library leaves, found the statement faithful, the target right and every gate passing, and asked for two
