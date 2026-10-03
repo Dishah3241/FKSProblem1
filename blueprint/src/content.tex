@@ -25,14 +25,16 @@
 % in the built project. That check is what keeps this document from drifting away from the Lean,
 % so never write a \lean{} you have not built, and run it before every push.
 % Every node below is proved, so each carries \leanok --- except the question itself,
-% which is open and does not.
+% which is false (refuted externally) and is not proved here.
 
 \chapter{FKS Problem 1 for graphs on at most twice the dimension}
 
 The proved first target: every graph on at most $2 d$ vertices whose vertices each have at
 most $d$ neighbours and which has no complete component of order $d + 1$ sits on the sphere
 of radius $1/\sqrt2$ about the origin of $\mathbb{R}^d$, for every $d \ge 4$. The general
-question of Frankl--Kupavskii--Swanepoel remains open. Placements are injective and
+question of Frankl--Kupavskii--Swanepoel is false: Mishra and Senthilkumar (2026) showed
+that the square of the nine-cycle is a counterexample at $d = 4$, so the bound proved here
+is sharp there. Placements are injective and
 non-edges are unconstrained; on the sphere, distance one is orthogonality. The proof runs
 through the shared library: bridges translate the frozen statement into the library's
 predicates, a degree bound carries to the complement, Tutte's theorem splits the complement
@@ -89,13 +91,16 @@ degrees are disposed of by the bounded-degree proposition.
   \uses{def:spherical,def:exception}
   For every $d > 3$, every graph of maximum degree at most $d$ with no connected component
   isomorphic to $K_{d+1}$ has spherical dimension at most $d$ --- Problem~1 of
-  Frankl, Kupavskii and Swanepoel (2020), l.~433 of the LaTeX source. This is open: the
-  question is stated, not settled. Below four the instances are false: at $d = 1$ three
+  Frankl, Kupavskii and Swanepoel (2020), l.~433 of the LaTeX source. The answer is no: Mishra and
+  Senthilkumar (2026) showed, with a Lean proof, that the square of the nine-cycle, a
+  connected 4-regular graph on nine vertices, has no such placement in $\mathbb{R}^4$. This
+  repository states the question but does not contain that disproof. Below four the instances are false: at $d = 1$ three
   isolated vertices need three distinct points on the two-point sphere of $\mathbb{R}^1$
   (proved by the statement's drop companion), at $d = 2$ the five-cycle, and at $d = 3$ the
   cube, which is why the source poses the question for $d > 3$. The restriction to graphs
   on at most $2 d$ vertices is proved in this repository for every $d > 3$
-  (Theorem~\ref{thm:bounded-target}); the general question remains open.
+  (Theorem~\ref{thm:bounded-target}), which is sharp at $d = 4$. Neither this bounded proof
+  nor the dimension-four counterexample settles the question restricted to $d \ge 5$.
 \end{conjecture}
 
 \section{Existing library interfaces}
@@ -488,7 +493,7 @@ degrees are disposed of by the bounded-degree proposition.
   FKS Problem 1 for graphs on at most $2d$ vertices: for every $d > 3$, every such graph
   of maximum degree at most $d$ with no complete component of order $d + 1$ has spherical
   dimension at most $d$. This is the first target of the project; the unrestricted
-  Conjecture~\ref{que:fks} remains open.
+  Conjecture~\ref{que:fks} is false at $d = 4$, so this bound is sharp there.
 \end{theorem}
 \begin{proof}
   Translate the degree bound and the component exception by the bridges

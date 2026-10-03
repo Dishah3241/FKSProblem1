@@ -20,9 +20,9 @@ unit-distance representations, graph dimension and bounded-degree embedding prob
 that the square of the nine-cycle, a connected 4-regular graph that is not `K₅`, has no spherical
 representation in `ℝ⁴`, with a Lean proof against this question's formal-conjectures statement (finding A58;
 the manager compiled it). It has nine vertices, so the bound proved here is sharp at `d = 4`: every graph on
-at most `2d = 8` vertices works, and the first counterexample has `2d + 1`. The question for `d ≥ 5` is
-still open. `Problem1` and `Problem1At4` stay stated here, carrying the template's open mark, since this
-repository does not contain the disproof.
+at most `2d = 8` vertices works, and the first counterexample has `2d + 1`. Neither this bounded proof nor the
+dimension-four counterexample settles the question restricted to `d ≥ 5`. `Problem1` and `Problem1At4`
+stay stated here, carrying the template's open mark, since this repository does not contain the disproof.
 The source's exception “except `K_{d+1}`” is read componentwise (A40): `K_{d+1}` together
 with an isolated vertex is a counterexample to a literal exception of only the whole graph
 `K_{d+1}`. Its clique forces `d + 1` nonzero orthogonal vectors in ℝᵈ. Under the degree
