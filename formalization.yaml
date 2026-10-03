@@ -8,9 +8,10 @@ project:
     d ≥ 4: every finite simple graph of maximum degree at most d with no connected
     component isomorphic to K_{d+1} has an injective placement in Euclidean d-space,
     with every vertex of norm 1/√2 and every edge at distance exactly 1. Non-edges
-    are unconstrained and may also have length 1. The unrestricted question, including
-    its d = 4 instance, is stated; it is false at d = 4 (Mishra and Senthilkumar 2026: the square
-    of the nine-cycle), so the bounded case proved here is sharp at d = 4. The exception is interpreted
+    are unconstrained and may also have length 1. The unrestricted question is false at
+    d = 4: Mishra and Senthilkumar (2026) showed that the square of the nine-cycle, on
+    2d + 1 = 9 vertices, has no such placement. The bound proved here is therefore sharp
+    at d = 4. The question for d ≥ 5 remains open. The exception is interpreted
     componentwise: a K_{d+1} component already precludes such a placement even when
     other components are present. The research audience is discrete geometers and
     extremal graph theorists studying spherical unit-distance representations,
@@ -56,7 +57,8 @@ status:
     G.maxDegree ≤ d and no complete component of order d + 1 has an injective spherical
     placement in EuclideanSpace R (Fin d), of radius 1/√2, with every edge at distance 1.
     The unrestricted Problem1 and Problem1At4 are Prop definitions, not admitted
-    theorems; both are false (refuted at d = 4 by Mishra and Senthilkumar 2026). All fidelity companions are proved. The sole deliberate sorry
+    theorems; both are false (refuted at d = 4 by Mishra and Senthilkumar 2026).
+    All fidelity companions are proved. The sole deliberate sorry
     is the advertised hole in Challenge.lean, excluded from the counts below.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -167,8 +169,8 @@ automation:
     pending; its model will be named only after its run log supplies evidence.
 
 limitations: >-
-  Only the at-most-2d-vertex restriction is proved; the unrestricted problem and its
-  d = 4 instance remain open. The proved case is not claimed as new. Witnesses, separating examples and statement equivalence
+  Only the at-most-2d-vertex restriction is proved. The unrestricted problem is false
+  at d = 4 (Mishra and Senthilkumar 2026) and open for d ≥ 5. The proved case is not claimed as new. Witnesses, separating examples and statement equivalence
   reduce semantic risk but do not replace mathematical review. Local Comparator
   on macOS uses no sandbox. Sandboxed Palomar preflight, the final committed-tree
   verification and publication remain release steps for the manager.
