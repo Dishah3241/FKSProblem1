@@ -196,10 +196,11 @@ two-point sphere of `ℝ¹`. -/
 def Problem1.dropHd3 : Prop := ¬ ∀ (d : ℕ), Problem1At d
 
 /-- Open problem. The instance of FKS Problem 1 at `d = 4`: every graph of maximum degree at most
-`4` with no connected component isomorphic to `K₅` has spherical dimension at most `4`. This is
-the smallest undecided instance: the instances at `d = 1`, `2`, `3` are false (three isolated
-vertices, the five-cycle, the cube), and the source settles no case of the spherical question at
-`d ≥ 4`. -/
+`4` with no connected component isomorphic to `K₅` has spherical dimension at most `4`. The
+instances at `d = 1`, `2`, `3` are false (three isolated vertices, the five-cycle, the cube), and
+the source settles no case of the spherical question at `d ≥ 4`. This instance is false too:
+Mishra and Senthilkumar (2026) show the square of the nine-cycle is a counterexample. Its open mark
+records only that no disproof is proved here. -/
 def Problem1At4 : Prop := Problem1At 4
 
 open Classical in

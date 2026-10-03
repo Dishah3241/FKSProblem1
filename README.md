@@ -16,8 +16,13 @@ J. Combin. Theory Ser. A 171 (2020), 105146,
 The research audience is discrete geometers and extremal graph theorists studying spherical
 unit-distance representations, graph dimension and bounded-degree embedding problems.
 
-The full question remains **open**: does the same conclusion hold without the vertex bound,
-for every `d ≥ 4`? Its unrestricted `d = 4` instance is also stated and marked open.
+**Without the vertex bound the answer is no.** Mishra and Senthilkumar (2026, [anshM123/FKS-Problem-One](https://github.com/anshM123/FKS-Problem-One)) showed
+that the square of the nine-cycle, a connected 4-regular graph that is not `K₅`, has no spherical
+representation in `ℝ⁴`, with a Lean proof against this question's formal-conjectures statement (finding A58;
+the manager compiled it). It has nine vertices, so the bound proved here is sharp at `d = 4`: every graph on
+at most `2d = 8` vertices works, and the first counterexample has `2d + 1`. The question for `d ≥ 5` is
+still open. `Problem1` and `Problem1At4` stay stated here, carrying the template's open mark, since this
+repository does not contain the disproof.
 The source's exception “except `K_{d+1}`” is read componentwise (A40): `K_{d+1}` together
 with an isolated vertex is a counterexample to a literal exception of only the whole graph
 `K_{d+1}`. Its clique forces `d + 1` nonzero orthogonal vectors in ℝᵈ. Under the degree
@@ -28,12 +33,12 @@ at most `d`, consistent with the source's bounded-degree proposition.
 **Novelty.** This is a Lean-checked proof of FKS Problem 1 for graphs on at most `2d` vertices. It follows from
 published results — FKS Lemma 13 with Tutte's theorem, which is the route taken here, or equitable colouring
 (Hajnal–Szemerédi, Chen–Lih–Wu) — and a two-lineage literature check found it stated nowhere. It is not claimed as a
-new result; the unrestricted problem remains open.
+new result. The unrestricted problem is false at `d = 4` (see above).
 
 | | |
 |---|---|
 | Proof | `Problem1Bounded.proof` is proved for every `d ≥ 4`; no `sorry` in the development; only `propext`, `Classical.choice` and `Quot.sound` |
-| General problem | `Problem1` and `Problem1At4` are Prop definitions marked open, not admitted theorems |
+| General problem | `Problem1` and `Problem1At4` are Prop definitions, not admitted theorems; both are false, refuted at `d = 4` by Mishra and Senthilkumar (2026, [anshM123/FKS-Problem-One](https://github.com/anshM123/FKS-Problem-One)) |
 | Comparator | Accepted by Lean and NanoDa in the local macOS run ([record](docs/comparator-2026-09-29.md)) |
 | Library | [GraphDimension at the pinned revision](https://github.com/Dishah3241/GraphDimension/tree/db8062bb838b4ac31ea4d5648ea2a8b51685cfa0); main proof `SimpleGraph.SphereEmbeddable.of_card_le_two_mul` |
 | Statement review | Two statements authored blind and proved equivalent in [Stage1](FKSProblem1/Stage1/Equivalence.lean); owner signed [Compass rows 1–15](docs/compass.md) on 2026-09-28 |

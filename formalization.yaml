@@ -9,7 +9,8 @@ project:
     component isomorphic to K_{d+1} has an injective placement in Euclidean d-space,
     with every vertex of norm 1/√2 and every edge at distance exactly 1. Non-edges
     are unconstrained and may also have length 1. The unrestricted question, including
-    its d = 4 instance, is stated and marked open. The exception is interpreted
+    its d = 4 instance, is stated; it is false at d = 4 (Mishra and Senthilkumar 2026: the square
+    of the nine-cycle), so the bounded case proved here is sharp at d = 4. The exception is interpreted
     componentwise: a K_{d+1} component already precludes such a placement even when
     other components are present. The research audience is discrete geometers and
     extremal graph theorists studying spherical unit-distance representations,
@@ -54,8 +55,8 @@ status:
     Problem1Bounded: for every natural d > 3, every graph G on Fin n with n ≤ 2d,
     G.maxDegree ≤ d and no complete component of order d + 1 has an injective spherical
     placement in EuclideanSpace R (Fin d), of radius 1/√2, with every edge at distance 1.
-    The unrestricted Problem1 and Problem1At4 remain open Prop definitions, not
-    admitted theorems. All fidelity companions are proved. The sole deliberate sorry
+    The unrestricted Problem1 and Problem1At4 are Prop definitions, not admitted
+    theorems; both are false (refuted at d = 4 by Mishra and Senthilkumar 2026). All fidelity companions are proved. The sole deliberate sorry
     is the advertised hole in Challenge.lean, excluded from the counts below.
   sorry_count: 0
   sorry_in_definitions: 0
