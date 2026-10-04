@@ -41,6 +41,22 @@ sources:
       from published results (FKS Lemma 13 with Tutte's theorem; or equitable colouring)
       and was found stated nowhere; it is not claimed as new.
 
+  - title: "FKS-Problem-One (Lean repository)"
+    authors: ["Ansh Mishra", "Aryan Senthilkumar"]
+    id: "https://github.com/anshM123/FKS-Problem-One/tree/447a08006920ae77d101c35c4ccf94f0f6fa18fc"
+    type: "other"
+    location: "lean/DMSolutions/FKS_Problem1/Solution.lean, at commit 447a080 (2026)"
+    relationship: "background"
+    author_endorsement: "other"
+    note: >-
+      An external Lean disproof of the unrestricted problem and of its d = 4 instance:
+      the square of the nine-cycle, on 2d + 1 = 9 vertices, has no spherical placement in
+      R^4. It is not part of this submission, which proves only the at-most-2d case; it
+      shows that case is sharp at d = 4. The manager recompiled it against the
+      formal-conjectures statement (standard axioms, no sorry). The authors were credited
+      on formal-conjectures PR #6681 and said the credit is fine; they have not reviewed
+      this submission.
+
 related_formalizations:
   - id: "https://github.com/Dishah3241/GraphDimension/tree/db8062bb838b4ac31ea4d5648ea2a8b51685cfa0"
     relationship: "builds-on"
