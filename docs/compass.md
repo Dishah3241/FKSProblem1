@@ -55,5 +55,11 @@ Everything else, including every later proof and the GraphDimension library, is 
 
 - **Which declaration Palomar sees.** At phase 1's release, `Challenge.lean` states `Problem1Bounded`.
 - **The companions' proofs** (rows 8–13). Their statements are frozen above; their proofs are a leaf before the gates.
-- **The open-claim marks** on rows 4 and 5 ("Open problem" in the docstring, an `open:` line in the proof block) are
-  metadata under the template's convention. The manager tells the owner when they land.
+- **The claim marks** on rows 4 and 5 are metadata under the template's convention. They began as open marks
+  ("Open problem" in the docstring, an `open:` line in the proof block).
+- **Status, 2026-10-03.** Rows 4 and 5 are false: Mishra and Senthilkumar (2026) prove in Lean that the square of the
+  nine-cycle is a counterexample at `d = 4` (finding A58). The rows' meaning and their Lean bodies are unchanged; their
+  docstrings and the proof-link lines now carry the template's "Refuted elsewhere" mark with the dated, commit-pinned
+  evidence link, and the same holds for statement B's `Question` and `QuestionFour`. The code of statements A and B and
+  the inline file is byte-identical to the frozen text outside doc comments. The signed rows stand; row 5's "the
+  smallest undecided instance" and row 4's "frozen open question" describe the status at the freeze.

@@ -15,9 +15,9 @@ import FKSProblem1.Standalone.Mathlib.StatementAProof
 The inline statement repeats statement A's declarations with the same bodies, so each proof is the
 corresponding proof in `StatementAProof`: the bounded first target through the degree, component
 and spherical bridges and the shared library's at-most-`2 * d`-vertex result, and the fidelity
-companions from the elementary placements. FKS 2020 Problem 1 itself remains open, as do its
-`d = 4` instance and the whole question; only the restriction to at most `2 * d` vertices is
-proved.
+companions from the elementary placements. FKS 2020 Problem 1 itself and its `d = 4`
+instance are false (Mishra and Senthilkumar, 2026), a disproof not contained here; only the
+restriction to at most `2 * d` vertices is proved.
 -/
 
 public section

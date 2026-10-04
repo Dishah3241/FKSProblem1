@@ -31,7 +31,7 @@ J. Combin. Theory Ser. A 171 (2020), 105146, asks:
   negation is the componentwise reading of the exception "except `K_{d+1}`".
 * `Problem1At`: the question at one fixed `d`.
 * `Problem1`: the question, for every `d > 3`.
-* `Problem1At4`: the `d = 4` instance, the smallest undecided instance.
+* `Problem1At4`: the `d = 4` instance, refuted by Mishra and Senthilkumar (2026).
 * `Problem1BoundedAt`: the question at one fixed `d`, restricted to graphs on at most
   `2 * d` vertices.
 * `Problem1Bounded`: the at-most-`2 * d`-vertices restriction for every `d > 3`: the first
@@ -154,8 +154,8 @@ one-vertex component, hence every nonempty graph of maximum degree `0`, so the i
 (no `K₂` component, and the sphere `±(1 / √2)` of `ℝ¹` carries only two points); the five-cycle
 at `d = 2` (consecutive adjacencies would force all five placed vectors parallel, against
 injectivity); and the cube at `d = 3`, which the paper records as not embeddable on `S²` although
-it is bipartite and so has no `K₄` component. The question is posed for `d > 3` and is open
-there. -/
+it is bipartite and so has no `K₄` component. The question is posed for `d > 3`; it is false
+at `d = 4` (Mishra and Senthilkumar, 2026). -/
 def Problem1At (d : ℕ) : Prop :=
   ∀ (n : ℕ) (G : SimpleGraph (Fin n)), G.maxDegree ≤ d → ¬ HasCompleteComponent d G →
     HasSphericalDimAtMost d G
@@ -173,10 +173,11 @@ def Problem1At.separating : Prop :=
     G.maxDegree ≤ d ∧ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
     ¬ (n = d + 1 ∧ ∀ a b : Fin n, a ≠ b → G.Adj a b)
 
-/-- Open problem. FKS Problem 1, as a proposition: for every `d > 3`, every graph of maximum
+/-- Refuted elsewhere. FKS Problem 1, as a proposition: for every `d > 3`, every graph of maximum
 degree at most `d` with no connected component isomorphic to `K_{d+1}` has spherical dimension at
-most `d`. Stated here, not settled: work on this question can end in a proof or in a disproof, at
-one fixed `d ≥ 4` or for all `d > 3` at once. -/
+most `d`. It is false: Mishra and Senthilkumar (2026) prove in Lean that the square of the
+nine-cycle is a counterexample at `d = 4`. The question is stated here, but that disproof is not
+contained here; the counterexample does not settle the question restricted to `d ≥ 5`. -/
 def Problem1 : Prop := ∀ (d : ℕ) (_hd3 : 3 < d), Problem1At d
 
 open Classical in
@@ -195,12 +196,12 @@ no component isomorphic to `K₂` (its components are singletons), and no inject
 two-point sphere of `ℝ¹`. -/
 def Problem1.dropHd3 : Prop := ¬ ∀ (d : ℕ), Problem1At d
 
-/-- Open problem. The instance of FKS Problem 1 at `d = 4`: every graph of maximum degree at most
-`4` with no connected component isomorphic to `K₅` has spherical dimension at most `4`. The
+/-- Refuted elsewhere. The instance of FKS Problem 1 at `d = 4`: every graph of maximum degree
+at most `4` with no connected component isomorphic to `K₅` has spherical dimension at most `4`. The
 instances at `d = 1`, `2`, `3` are false (three isolated vertices, the five-cycle, the cube), and
 the source settles no case of the spherical question at `d ≥ 4`. This instance is false too:
-Mishra and Senthilkumar (2026) show the square of the nine-cycle is a counterexample. Its open mark
-records only that no disproof is proved here. -/
+Mishra and Senthilkumar (2026) prove in Lean that the square of the nine-cycle, on nine vertices,
+is a counterexample; that disproof is not contained here. -/
 def Problem1At4 : Prop := Problem1At 4
 
 open Classical in

@@ -37,9 +37,9 @@ use it, and "except `K_{d+1}`" is read componentwise, as "no connected component
 `Problem1At` is the question at one fixed `d`; `Problem1` is the question for every `d > 3`;
 `Problem1At4` is the `d = 4` instance; `Problem1BoundedAt` and `Problem1Bounded` restrict the
 question to graphs on at most `2 * d` vertices, which is the first target. The questions are
-stated as propositions whose truth is claimed in neither direction; each closed claim carries the
-"Open problem" marker, and every definition and closed claim carries its fidelity battery:
-witness, separating example, drop companions.
+stated as propositions; `Problem1` and `Problem1At4` carry the "Refuted elsewhere" marker,
+since Mishra and Senthilkumar (2026) disprove them, and every definition and closed claim carries
+its fidelity battery: witness, separating example, drop companions.
 -/
 
 @[expose] public section
@@ -136,8 +136,8 @@ one-vertex component, hence every nonempty graph of maximum degree `0`, so the i
 (no `K₂` component, and the sphere `±(1 / √2)` of `ℝ¹` carries only two points); the five-cycle
 at `d = 2` (consecutive adjacencies would force all five placed vectors parallel, against
 injectivity); and the cube at `d = 3`, which the paper records as not embeddable on `S²` although
-it is bipartite and so has no `K₄` component. The question is posed for `d > 3` and is open
-there. -/
+it is bipartite and so has no `K₄` component. The question is posed for `d > 3`; it is false
+at `d = 4` (Mishra and Senthilkumar, 2026). -/
 def Problem1At (d : ℕ) : Prop :=
   ∀ (n : ℕ) (G : SimpleGraph (Fin n)), G.maxDegree ≤ d → ¬ HasCompleteComponent d G →
     HasSphericalDimAtMost d G
@@ -155,10 +155,11 @@ def Problem1At.separating : Prop :=
     G.maxDegree ≤ d ∧ HasCompleteComponent d G ∧ ¬ HasSphericalDimAtMost d G ∧
     ¬ (n = d + 1 ∧ ∀ a b : Fin n, a ≠ b → G.Adj a b)
 
-/-- Open problem. FKS Problem 1, as a proposition: for every `d > 3`, every graph of maximum
+/-- Refuted elsewhere. FKS Problem 1, as a proposition: for every `d > 3`, every graph of maximum
 degree at most `d` with no connected component isomorphic to `K_{d+1}` has spherical dimension at
-most `d`. Stated here, not settled: work on this question can end in a proof or in a disproof, at
-one fixed `d ≥ 4` or for all `d > 3` at once. -/
+most `d`. It is false: Mishra and Senthilkumar (2026) prove in Lean that the square of the
+nine-cycle is a counterexample at `d = 4`. The question is stated here, but that disproof is not
+contained here; the counterexample does not settle the question restricted to `d ≥ 5`. -/
 def Problem1 : Prop := ∀ (d : ℕ) (_hd3 : 3 < d), Problem1At d
 
 open Classical in
@@ -177,12 +178,12 @@ no component isomorphic to `K₂` (its components are singletons), and no inject
 two-point sphere of `ℝ¹`. -/
 def Problem1.dropHd3 : Prop := ¬ ∀ (d : ℕ), Problem1At d
 
-/-- Open problem. The instance of FKS Problem 1 at `d = 4`: every graph of maximum degree at most
-`4` with no connected component isomorphic to `K₅` has spherical dimension at most `4`. The
+/-- Refuted elsewhere. The instance of FKS Problem 1 at `d = 4`: every graph of maximum degree
+at most `4` with no connected component isomorphic to `K₅` has spherical dimension at most `4`. The
 instances at `d = 1`, `2`, `3` are false (three isolated vertices, the five-cycle, the cube), and
 the source settles no case of the spherical question at `d ≥ 4`. This instance is false too:
-Mishra and Senthilkumar (2026) show the square of the nine-cycle is a counterexample. Its open mark
-records only that no disproof is proved here. -/
+Mishra and Senthilkumar (2026) prove in Lean that the square of the nine-cycle, on nine vertices,
+is a counterexample; that disproof is not contained here. -/
 def Problem1At4 : Prop := Problem1At 4
 
 open Classical in
@@ -249,8 +250,8 @@ end FKSProblem1.StatementA
 Proved in `StatementAProof`. `Problem1Bounded` is the proved first target; the `separating`,
 `witness` and `dropHd3` lines link the fidelity companions of the claims that carry them.
 
-* `Problem1` → open: FKS 2020 Problem 1
-* `Problem1At4` → open: FKS 2020 Problem 1
+* `Problem1` → refuted-elsewhere: 2026-10-02 https://github.com/anshM123/FKS-Problem-One/blob/447a08006920ae77d101c35c4ccf94f0f6fa18fc/lean/DMSolutions/FKS_Problem1/Solution.lean
+* `Problem1At4` → refuted-elsewhere: 2026-10-02 https://github.com/anshM123/FKS-Problem-One/blob/447a08006920ae77d101c35c4ccf94f0f6fa18fc/lean/DMSolutions/FKS_Problem1/Solution.lean
 * `Problem1Bounded` → `Problem1Bounded.proof`
 * `separating` → `separating.proof`
 * `witness` → `witness.proof`

@@ -78,7 +78,7 @@ def SphericalRepresentation.separating : Prop :=
     (∀ v, dist (f v) 0 = 1 / Real.sqrt 2) ∧ dist (f 0) (f 1) = 1) ∧
   SphericalRepresentation 2 (⊥ : SimpleGraph (Fin 2))
 
-/-- Open problem: the corrected FKS question in one fixed dimension `d`, intended for `d > 3`.
+/-- The corrected FKS question in one fixed dimension `d`, intended for `d > 3`.
 The component exception excludes complete components, including those accompanied by isolates. -/
 def QuestionAt (d : ℕ) : Prop :=
   ∀ (n : ℕ) (G : SimpleGraph (Fin n)),
@@ -90,8 +90,9 @@ def QuestionAt (d : ℕ) : Prop :=
       (∀ v, dist (f v) 0 = 1 / Real.sqrt 2) ∧
       ∀ v w, G.Adj v w → dist (f v) (f w) = 1
 
-/-- Open problem: the corrected FKS question for every natural dimension
-strictly greater than three. -/
+/-- Refuted elsewhere: the corrected FKS question for every natural dimension strictly greater
+than three. Mishra and Senthilkumar (2026) prove in Lean that the square of the nine-cycle is a
+counterexample at `d = 4`; that disproof is not contained here. -/
 def Question : Prop :=
   ∀ d : ℕ,
   ∀ (_hdim : 3 < d),
@@ -104,8 +105,10 @@ def Question : Prop :=
       (∀ v, dist (f v) 0 = 1 / Real.sqrt 2) ∧
       ∀ v w, G.Adj v w → dist (f v) (f w) = 1
 
-/-- Open problem: every finite graph of degree at most four without a `K₅` component has an
-injective unit-distance placement on the radius-`1 / √2` sphere in `ℝ⁴`. -/
+/-- Refuted elsewhere: every finite graph of degree at most four without a `K₅` component has an
+injective unit-distance placement on the radius-`1 / √2` sphere in `ℝ⁴`. It is false: Mishra and
+Senthilkumar (2026) prove in Lean that the square of the nine-cycle is a counterexample; that
+disproof is not contained here. -/
 def QuestionFour : Prop :=
   ∀ (n : ℕ) (G : SimpleGraph (Fin n)),
   ∀ (_hdegree : ∀ v, (G.neighborSet v).ncard ≤ 4),
@@ -116,7 +119,7 @@ def QuestionFour : Prop :=
       (∀ v, dist (f v) 0 = 1 / Real.sqrt 2) ∧
       ∀ v w, G.Adj v w → dist (f v) (f w) = 1
 
-/-- Open problem: the corrected question in fixed dimension `d`, restricted to at most `2 * d`
+/-- The corrected question in fixed dimension `d`, restricted to at most `2 * d`
 vertices. The index `n` includes zero and the endpoint `2 * d`. -/
 def QuestionAtMostTwoMulAt (d : ℕ) : Prop :=
   ∀ (n : Fin (2 * d + 1)) (G : SimpleGraph (Fin n.val)),
@@ -327,8 +330,8 @@ def FirstTarget.dropHcomponent : Prop :=
 Proved in `StatementBProof`. `FirstTarget` is the proved first target; the `witness`,
 `separating`, `dropHdim`, `dropHdegree` and `dropHcomponent` lines link every fidelity companion.
 
-* `Question` → open: FKS 2020 Problem 1
-* `QuestionFour` → open: FKS 2020 Problem 1
+* `Question` → refuted-elsewhere: 2026-10-02 https://github.com/anshM123/FKS-Problem-One/blob/447a08006920ae77d101c35c4ccf94f0f6fa18fc/lean/DMSolutions/FKS_Problem1/Solution.lean
+* `QuestionFour` → refuted-elsewhere: 2026-10-02 https://github.com/anshM123/FKS-Problem-One/blob/447a08006920ae77d101c35c4ccf94f0f6fa18fc/lean/DMSolutions/FKS_Problem1/Solution.lean
 * `FirstTarget` → `FirstTarget.proof`
 * `witness` → `witness.proof`
 * `separating` → `separating.proof`

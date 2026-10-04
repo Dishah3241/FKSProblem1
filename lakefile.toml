@@ -54,6 +54,12 @@ globs = ["Challenge"]
 name = "Solution"
 roots = ["Solution"]
 
+# Shared audit type contract; explicit registration makes Lake build its imports.
+[[lean_lib]]
+name = "scripts"
+roots = []
+globs = ["scripts.StatementProof"]
+
 [[lean_exe]]
 name = "palomar-compatibility"
 root = "scripts.PalomarCompatibility"

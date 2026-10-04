@@ -24,6 +24,14 @@ manual judgment.
 
 private def maxLineLength : Nat := 100
 
+/-- A refuted-elsewhere proof-link record must stay on one line, and its commit-pinned URL cannot be
+wrapped; such a line may exceed the limit only by its final URL. -/
+private def isLongRefutedRecord (line : String) : Bool :=
+  line.startsWith "* `" && (line.splitOn "` → refuted-elsewhere: ").length == 2 &&
+    match (line.splitOn " ").reverse with
+    | url :: _ => url.startsWith "https://" && line.length - url.length ≤ maxLineLength
+    | [] => false
+
 private def auditedDirectories : Array System.FilePath := #["FKSProblem1", "scripts"]
 
 private partial def collectLeanFiles (directory : System.FilePath) :
@@ -55,7 +63,7 @@ private def checkFile (file : System.FilePath) : IO (Array String) := do
   let mut lineNumber := 0
   for line in (← IO.FS.lines file) do
     lineNumber := lineNumber + 1
-    if line.length > maxLineLength then
+    if line.length > maxLineLength && !isLongRefutedRecord line then
       violations := violations.push
         s!"  {file}:{lineNumber}: {line.length} characters, limit {maxLineLength}"
     if line.endsWith " " || line.endsWith "\t" then
